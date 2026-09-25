@@ -12,27 +12,33 @@ CREATE TABLE IF NOT EXISTS public.shops (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 2. Table Subscriptions (Abonnements)
+-- 2. Table Subscriptions (Abonnements: Starter, Business, Pro Grossiste)
 CREATE TABLE IF NOT EXISTS public.subscriptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     shop_id UUID NOT NULL UNIQUE REFERENCES public.shops(id) ON DELETE CASCADE,
-    plan TEXT NOT NULL DEFAULT 'essai', -- 'gratuit', 'essai', 'pro'
+    plan TEXT NOT NULL DEFAULT 'essai', -- 'gratuit', 'essai', 'starter', 'business', 'pro_grossiste'
     ends_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '30 days'),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 3. Table Products (Produits)
+-- 3. Table Products (Produits avec prix gros & seuil)
 CREATE TABLE IF NOT EXISTS public.products (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     shop_id UUID NOT NULL REFERENCES public.shops(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     buy_price INTEGER NOT NULL DEFAULT 0,
     sell_price INTEGER NOT NULL DEFAULT 0,
+    wholesale_price INTEGER DEFAULT NULL,
+    wholesale_min_qty INTEGER DEFAULT NULL,
     qty INTEGER NOT NULL DEFAULT 0,
     alert_threshold INTEGER NOT NULL DEFAULT 10,
     archived BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Ajouter colonnes pour les bases existantes si besoin
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS wholesale_price INTEGER DEFAULT NULL;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS wholesale_min_qty INTEGER DEFAULT NULL;
 
 -- 4. Table Customers (Clients)
 CREATE TABLE IF NOT EXISTS public.customers (
@@ -43,7 +49,17 @@ CREATE TABLE IF NOT EXISTS public.customers (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 5. Table Sales (Ventes)
+-- 5. Table Suppliers (Fournisseurs)
+CREATE TABLE IF NOT EXISTS public.suppliers (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID NOT NULL REFERENCES public.shops(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    phone TEXT,
+    address TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- 6. Table Sales (Ventes)
 CREATE TABLE IF NOT EXISTS public.sales (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     shop_id UUID NOT NULL REFERENCES public.shops(id) ON DELETE CASCADE,
@@ -52,7 +68,7 @@ CREATE TABLE IF NOT EXISTS public.sales (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 6. Table Sale Items (Lignes de vente)
+-- 7. Table Sale Items (Lignes de vente)
 CREATE TABLE IF NOT EXISTS public.sale_items (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     sale_id UUID NOT NULL REFERENCES public.sales(id) ON DELETE CASCADE,
@@ -64,7 +80,30 @@ CREATE TABLE IF NOT EXISTS public.sale_items (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 7. Table Stock Movements (Mouvements de stock)
+-- 8. Table Supplier Purchases (Achats Fournisseurs)
+CREATE TABLE IF NOT EXISTS public.supplier_purchases (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID NOT NULL REFERENCES public.shops(id) ON DELETE CASCADE,
+    supplier_id UUID NOT NULL REFERENCES public.suppliers(id) ON DELETE CASCADE,
+    product_id UUID REFERENCES public.products(id) ON DELETE SET NULL,
+    product_name TEXT NOT NULL,
+    unit_buy_price INTEGER NOT NULL DEFAULT 0,
+    qty INTEGER NOT NULL DEFAULT 1,
+    total INTEGER NOT NULL DEFAULT 0,
+    paid_amount INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- 9. Table Supplier Payments (Remboursements Fournisseurs)
+CREATE TABLE IF NOT EXISTS public.supplier_payments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    shop_id UUID NOT NULL REFERENCES public.shops(id) ON DELETE CASCADE,
+    supplier_id UUID NOT NULL REFERENCES public.suppliers(id) ON DELETE CASCADE,
+    amount INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- 10. Table Stock Movements (Mouvements de stock)
 CREATE TABLE IF NOT EXISTS public.stock_movements (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     shop_id UUID NOT NULL REFERENCES public.shops(id) ON DELETE CASCADE,
@@ -74,7 +113,7 @@ CREATE TABLE IF NOT EXISTS public.stock_movements (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 8. Table Debt Payments (Paiements de dettes)
+-- 11. Table Debt Payments (Paiements de dettes clients)
 CREATE TABLE IF NOT EXISTS public.debt_payments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     shop_id UUID NOT NULL REFERENCES public.shops(id) ON DELETE CASCADE,
@@ -83,7 +122,7 @@ CREATE TABLE IF NOT EXISTS public.debt_payments (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 9. Vue Customer Balances (Solde des dettes clients)
+-- 12. Vue Customer Balances (Solde des dettes clients)
 CREATE OR REPLACE VIEW public.customer_balances AS
 SELECT
     c.id AS customer_id,
@@ -104,7 +143,28 @@ LEFT JOIN (
     GROUP BY customer_id
 ) payments_total ON payments_total.customer_id = c.id;
 
--- 10. Trigger automatique à la création d'une boutique pour démarrer l'essai gratuit
+-- 13. Vue Supplier Balances (Solde des dettes fournisseurs)
+CREATE OR REPLACE VIEW public.supplier_balances AS
+SELECT
+    sup.id AS supplier_id,
+    sup.shop_id,
+    sup.name,
+    sup.phone,
+    sup.address,
+    COALESCE(purchases_total.total_due, 0) - COALESCE(payments_total.total_paid, 0) AS balance
+FROM public.suppliers sup
+LEFT JOIN (
+    SELECT supplier_id, SUM(total - paid_amount) AS total_due
+    FROM public.supplier_purchases
+    GROUP BY supplier_id
+) purchases_total ON purchases_total.supplier_id = sup.id
+LEFT JOIN (
+    SELECT supplier_id, SUM(amount) AS total_paid
+    FROM public.supplier_payments
+    GROUP BY supplier_id
+) payments_total ON payments_total.supplier_id = sup.id;
+
+-- 14. Trigger automatique à la création d'une boutique pour démarrer l'essai gratuit
 CREATE OR REPLACE FUNCTION public.handle_new_shop()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -119,7 +179,7 @@ CREATE TRIGGER on_shop_created
     AFTER INSERT ON public.shops
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_shop();
 
--- 11. RPC: Enregistrer un mouvement de stock
+-- 15. RPC: Enregistrer un mouvement de stock
 CREATE OR REPLACE FUNCTION public.record_stock_movement(
     p_shop_id UUID,
     p_product_id UUID,
@@ -162,7 +222,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 12. RPC: Enregistrer une vente
+-- 16. RPC: Enregistrer une vente avec gestion automatique des prix gros
 CREATE OR REPLACE FUNCTION public.record_sale(
     p_shop_id UUID,
     p_customer_id UUID,
@@ -173,6 +233,7 @@ DECLARE
     v_sale_id UUID;
     v_item JSONB;
     v_product RECORD;
+    v_unit_price INT;
     v_total_sale INT := 0;
     v_item_qty INT;
 BEGIN
@@ -180,11 +241,11 @@ BEGIN
         RAISE EXCEPTION 'Le panier est vide';
     END IF;
 
-    -- Vérifier le stock pour tous les articles
+    -- Vérifier le stock & calculer le total avec prix gros si applicable
     FOR v_item IN SELECT * FROM JSONB_ARRAY_ELEMENTS(p_items) LOOP
         v_item_qty := (v_item->>'qty')::INT;
 
-        SELECT name, buy_price, sell_price, qty
+        SELECT name, buy_price, sell_price, wholesale_price, wholesale_min_qty, qty
         INTO v_product
         FROM public.products
         WHERE id = (v_item->>'product_id')::UUID AND shop_id = p_shop_id;
@@ -197,7 +258,14 @@ BEGIN
             RAISE EXCEPTION 'Stock insuffisant pour le produit %', v_product.name;
         END IF;
 
-        v_total_sale := v_total_sale + (v_product.sell_price * v_item_qty);
+        -- Prix gros si quantité min atteinte
+        IF v_product.wholesale_price IS NOT NULL AND v_product.wholesale_min_qty IS NOT NULL AND v_item_qty >= v_product.wholesale_min_qty THEN
+            v_unit_price := v_product.wholesale_price;
+        ELSE
+            v_unit_price := v_product.sell_price;
+        END IF;
+
+        v_total_sale := v_total_sale + (v_unit_price * v_item_qty);
     END LOOP;
 
     -- Créer la vente
@@ -209,13 +277,19 @@ BEGIN
     FOR v_item IN SELECT * FROM JSONB_ARRAY_ELEMENTS(p_items) LOOP
         v_item_qty := (v_item->>'qty')::INT;
 
-        SELECT name, buy_price, sell_price
+        SELECT name, buy_price, sell_price, wholesale_price, wholesale_min_qty
         INTO v_product
         FROM public.products
         WHERE id = (v_item->>'product_id')::UUID AND shop_id = p_shop_id;
 
+        IF v_product.wholesale_price IS NOT NULL AND v_product.wholesale_min_qty IS NOT NULL AND v_item_qty >= v_product.wholesale_min_qty THEN
+            v_unit_price := v_product.wholesale_price;
+        ELSE
+            v_unit_price := v_product.sell_price;
+        END IF;
+
         INSERT INTO public.sale_items (sale_id, product_id, product_name, qty, buy_price, sell_price)
-        VALUES (v_sale_id, (v_item->>'product_id')::UUID, v_product.name, v_item_qty, v_product.buy_price, v_product.sell_price);
+        VALUES (v_sale_id, (v_item->>'product_id')::UUID, v_product.name, v_item_qty, v_product.buy_price, v_unit_price);
 
         UPDATE public.products
         SET qty = qty - v_item_qty
@@ -229,13 +303,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 13. Activer Row Level Security (RLS) sur toutes les tables
+-- 17. Activer Row Level Security (RLS) sur toutes les tables
 ALTER TABLE public.shops ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.suppliers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sales ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sale_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.supplier_purchases ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.supplier_payments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.stock_movements ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.debt_payments ENABLE ROW LEVEL SECURITY;
 
@@ -251,27 +328,24 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- RLS Policies
--- Shops
 CREATE POLICY "Les utilisateurs gèrent leurs propres boutiques" ON public.shops
     FOR ALL USING (owner_id = auth.uid());
 
--- Subscriptions
 CREATE POLICY "Les utilisateurs voient l'abonnement de leur boutique" ON public.subscriptions
     FOR ALL USING (public.user_owns_shop(shop_id));
 
--- Products
 CREATE POLICY "Les utilisateurs gèrent les produits de leur boutique" ON public.products
     FOR ALL USING (public.user_owns_shop(shop_id));
 
--- Customers
 CREATE POLICY "Les utilisateurs gèrent les clients de leur boutique" ON public.customers
     FOR ALL USING (public.user_owns_shop(shop_id));
 
--- Sales
+CREATE POLICY "Les utilisateurs gèrent leurs fournisseurs" ON public.suppliers
+    FOR ALL USING (public.user_owns_shop(shop_id));
+
 CREATE POLICY "Les utilisateurs gèrent les ventes de leur boutique" ON public.sales
     FOR ALL USING (public.user_owns_shop(shop_id));
 
--- Sale Items
 CREATE POLICY "Les utilisateurs gèrent les articles de vente de leur boutique" ON public.sale_items
     FOR ALL USING (
         EXISTS (
@@ -280,10 +354,14 @@ CREATE POLICY "Les utilisateurs gèrent les articles de vente de leur boutique" 
         )
     );
 
--- Stock Movements
+CREATE POLICY "Les utilisateurs gèrent leurs achats fournisseurs" ON public.supplier_purchases
+    FOR ALL USING (public.user_owns_shop(shop_id));
+
+CREATE POLICY "Les utilisateurs gèrent leurs paiements fournisseurs" ON public.supplier_payments
+    FOR ALL USING (public.user_owns_shop(shop_id));
+
 CREATE POLICY "Les utilisateurs gèrent les mouvements de stock de leur boutique" ON public.stock_movements
     FOR ALL USING (public.user_owns_shop(shop_id));
 
--- Debt Payments
 CREATE POLICY "Les utilisateurs gèrent les paiements de dettes de leur boutique" ON public.debt_payments
     FOR ALL USING (public.user_owns_shop(shop_id));

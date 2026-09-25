@@ -1,82 +1,43 @@
-# SamaStock — Liaison et Configuration Supabase
+# SamaStock — Logiciel de Gestion de Stock & Ventes pour Commerçants et Grossistes au Sénégal
 
-Guide complet pour connecter votre projet SamaStock à une base de données **Supabase**.
-
----
-
-## 📋 Prérequis
-
-- Un compte sur [Supabase.com](https://supabase.co) (gratuit).
-- Le fichier `index.html` de votre projet SamaStock.
-- Le fichier `schema.sql` inclus dans ce dépôt.
+**SamaStock** est une application SaaS mobile-first conçue pour les détaillants, dem-grossistes et grossistes au Sénégal.
 
 ---
 
-## 🚀 Étape 1 : Créer un projet Supabase
+## ✨ Fonctionnalités Principales
 
-1. Connectez-vous sur [Supabase Dashboard](https://database.new) et cliquez sur **New Project**.
-2. Renseignez :
-   - **Name** : `samastock` (ou le nom de votre choix).
-   - **Database Password** : Définissez un mot de passe sécurisé.
-   - **Region** : Choisissez la région la plus proche (ex. *Europe West - Frankfurt*).
-3. Cliquez sur **Create new project** et patientez 1 à 2 minutes le temps que la base de données soit initialisée.
-
----
-
-## 🗄️ Étape 2 : Exécuter le script de base de données (`schema.sql`)
-
-1. Dans le menu de gauche sur Supabase, cliquez sur **SQL Editor** (icône `>/_`).
-2. Cliquez sur **New Query**.
-3. Ouvrez le fichier `schema.sql` présent à la racine de ce dépôt, copiez tout son contenu et collez-le dans l'éditeur SQL de Supabase.
-4. Cliquez sur le bouton **Run** (ou `Ctrl + Enter` / `Cmd + Enter`).
-5. Vous devez voir le message `Success. No rows returned`.
-
-> **Ce que fait ce script :**
-> - Active l'extension `uuid-ossp`.
-> - Crée les tables : `shops`, `subscriptions`, `products`, `customers`, `sales`, `sale_items`, `stock_movements`, `debt_payments`.
-> - Crée la vue `customer_balances` pour calculer les dettes des clients.
-> - Configure les procédures stockées (`record_sale`, `record_stock_movement`).
-> - Déclenche automatiquement un essai gratuit de 30 jours à la création d'une boutique (`handle_new_shop`).
-> - Active la sécurité **Row Level Security (RLS)** pour isoler les données de chaque utilisateur.
+- **📦 Gestion de Stock & Réapprovisionnements** : Suivi en temps réel des stocks, entrées et sorties, seuils d'alerte configurables et alertes de rupture.
+- **🏷️ Tarification Dégressive Grossiste** : Support des prix de vente au détail et des prix de vente en gros avec seuil de quantité minimale (ex. prix de gros s'appliquant dès 10 unités).
+- **💰 Caisse & Ventes** : Vente au comptant ou à crédit client en quelques clics, calcul automatique des totaux et des bénéfices estimés.
+- **👥 Clients & Crédits (Carnet de Dettes)** : Gestion des clients, suivi des dettes, enregistrement des versements et relances clients directes sur WhatsApp.
+- **🏭 Fournisseurs & Achats** : Suivi des fournisseurs, bons de livraison/achats, enregistrement du montant payé/crédit et suivi des dettes fournisseurs.
+- **💳 Abonnements adaptés au Sénégal** :
+  - **Starter** : 5 000 FCFA/mois (Jusqu'à 25 produits, 10 clients, 5 fournisseurs)
+  - **Business** : 10 000 FCFA/mois (Jusqu'à 100 produits, 50 clients, 25 fournisseurs)
+  - **Pro Grossiste** : 15 000 FCFA/mois (Illimité + Tarification & Ventes en gros dégressives)
+- **🇸🇳 Paiements Locaux** : Intégration Wave, Orange Money et PayDunya.
 
 ---
 
-## 🔑 Étape 3 : Récupérer les clés API Supabase
+## 🗄️ Structure de la Base de Données (`schema.sql`)
 
-1. Dans votre projet Supabase, allez dans **Project Settings** (icône d'engrenage ⚙️ en bas à gauche) > **API**.
-2. Récupérez les informations suivantes :
-   - **Project URL** (ex. `https://xxxx.supabase.co`).
-   - **anon public key** (clé publique qui commence par `eyJ...` ou `sb_publishable_...`).
-
----
-
-## ⚙️ Étape 4 : Configurer `index.html`
-
-Ouvrez le fichier `index.html` dans votre éditeur de code et modifiez les variables au début du script JS (vers la ligne 170) :
-
-```javascript
-var SB_URL = 'https://VOTRE_PROJET.supabase.co'; // Remplacez par votre Project URL
-var SB_KEY = 'VOTRE_CLÉ_ANON_PUBLIC';            // Remplacez par votre clé publique (anon)
-```
+- `shops` : Boutiques / commerces.
+- `subscriptions` : Suivi des offres (`starter`, `business`, `pro_grossiste`, `essai`).
+- `products` : Fiche produit (prix d'achat, prix détail, `wholesale_price`, `wholesale_min_qty`, quantité stock, seuil alerte).
+- `customers` & `customer_balances` : Clients et calcul du reste à payer.
+- `suppliers` & `supplier_balances` : Fournisseurs et suivi des dettes envers eux.
+- `sales` & `sale_items` : Transactions de vente avec application automatique du prix gros.
+- `supplier_purchases` & `supplier_payments` : Achats de réapprovisionnement auprès des fournisseurs et paiements.
+- `stock_movements` : Mouvements de stock (entrées / sorties).
 
 ---
 
-## 📧 Étape 5 : Configuration de l'Authentification (Optionnel)
+## 🚀 Installation & Configuration Supabase
 
-Par défaut, l'authentification par e-mail / mot de passe est activée sur Supabase.
-Si vous désirez désactiver la confirmation par e-mail obligatoire pour les nouveaux utilisateurs lors des tests :
-1. Dans Supabase, allez dans **Authentication** > **Providers** > **Email**.
-2. Décochez **Confirm email**.
-3. Cliquez sur **Save**.
-
----
-
-## 📦 Structure des données dans Supabase
-
-- `shops` : Boutiques créées par les utilisateurs (`owner_id`).
-- `products` : Stock des produits avec prix d'achat, de vente, quantité et seuil d'alerte.
-- `customers` : Liste des clients.
-- `sales` & `sale_items` : Historique des ventes et détails des articles vendus.
-- `stock_movements` : Entrées et sorties de stock.
-- `debt_payments` : Historique des remboursements de dettes.
-- `subscriptions` : Suivi des abonnements (`gratuit`, `essai`, `pro`).
+1. Exécutez le contenu de `schema.sql` dans l'éditeur SQL de votre projet Supabase (**SQL Editor**).
+2. Dans `index.html`, renseignez vos identifiants Supabase :
+   ```javascript
+   var SB_URL = 'https://VOTRE_PROJET.supabase.co';
+   var SB_KEY = 'VOTRE_CLE_ANON_PUBLIC';
+   ```
+3. Ouvrez `index.html` dans n'importe quel navigateur mobile ou desktop.

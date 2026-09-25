@@ -7,8 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="SamaStock">
-<title>SamaStock</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230F4C45'/%3E%3Cpath d='M22 38l28-14 28 14v28L50 80 22 66z' fill='none' stroke='%23F5B301' stroke-width='6' stroke-linejoin='round'/%3E%3Cpath d='M22 38l28 14 28-14M50 52v28' fill='none' stroke='%23F5B301' stroke-width='6' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title>SamaStock — Gestion de Stock & Ventes Sénégal</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230F4C45'/%3E%3Cpolygon points='50,20 78,35 50,50 22,35' fill='%23FFD75E'/%3E%3Cpolygon points='22,35 50,50 50,82 22,67' fill='%23F5B301'/%3E%3Cpolygon points='50,50 78,35 78,67 50,82' fill='%23C98F00'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&display=swap">
 <style>
@@ -32,7 +32,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:16px;line-height:1.4;-webkit-font-smoothing:antialiased}
-button,input{font:inherit;color:inherit}
+button,input,select{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 a{color:inherit}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
@@ -46,10 +46,13 @@ main.center{display:flex;flex-direction:column;justify-content:center}
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:14px}
 .top h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.01em}
 .top .date{color:var(--muted);font-size:14px}
-h2{font-size:17px;font-weight:800;margin:26px 0 4px}
+h2{font-size:17px;font-weight:800;margin:24px 0 6px}
 .muted{color:var(--muted)}
 
-.logo{font-size:38px;font-weight:800;letter-spacing:-.02em;margin:0 0 6px;color:var(--brand)}
+.logo{font-size:38px;font-weight:800;letter-spacing:-.02em;margin:0;color:var(--brand)}
+.brandrow{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+.hrow{display:flex;align-items:center;gap:10px;min-width:0}
+.hrow h1{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .logo{color:var(--accent)}}
 :root[data-theme="dark"] .logo{color:var(--accent)}
 .msg{padding:12px 14px;border-radius:12px;background:var(--danger-bg);color:var(--danger);font-weight:600;margin-top:14px}
@@ -59,17 +62,17 @@ h2{font-size:17px;font-weight:800;margin:26px 0 4px}
 
 .hero{background:var(--brand);color:var(--on-brand);border-radius:20px;padding:20px 20px 18px}
 .hero .label{font-size:15px;opacity:.85}
-.hero .big{font-size:52px;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:2px 0 14px}
+.hero .big{font-size:46px;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:2px 0 14px}
 .hero .big small{font-size:18px;font-weight:600;opacity:.85;letter-spacing:0;margin-left:4px}
-.hero .facts{display:flex;gap:28px;margin-bottom:18px}
+.hero .facts{display:flex;gap:20px;margin-bottom:18px}
 .hero .facts div span{display:block;font-size:13px;opacity:.8}
-.hero .facts div b{font-size:18px;font-weight:800}
+.hero .facts div b{font-size:17px;font-weight:800}
 .cta{width:100%;min-height:54px;border-radius:12px;background:var(--accent);color:var(--on-accent);font-weight:800;font-size:18px}
 
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
 .tile{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:14px}
 .tile span{display:block;font-size:14px;color:var(--muted)}
-.tile b{display:block;font-size:24px;font-weight:800;line-height:1.2}
+.tile b{display:block;font-size:22px;font-weight:800;line-height:1.2;margin-top:2px}
 .tile em{font-style:normal;font-size:13px;color:var(--muted)}
 .tile.warn b{color:var(--danger)}
 
@@ -86,7 +89,7 @@ h2{font-size:17px;font-weight:800;margin:26px 0 4px}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 16px;border-radius:12px;background:var(--brand);color:var(--on-brand);font-weight:700;text-decoration:none;text-align:center}
 .btn.ghost{background:transparent;border:2px solid var(--brand);color:var(--ink)}
-.btn.small{min-height:44px;padding:0 14px}
+.btn.small{min-height:42px;padding:0 12px;font-size:14px}
 .btn.wide{width:100%}
 .btn:disabled{opacity:.5}
 .link{color:var(--ink);text-decoration:underline;min-height:44px;padding:0 4px}
@@ -117,7 +120,7 @@ nav button[aria-current="page"]{color:var(--active)}
 .tag.vente{background:var(--brand);color:var(--on-brand)}
 .tag.entree,.tag.paiement{background:var(--ok);color:#fff}
 .tag.sortie{background:var(--danger);color:#fff}
-.tag.credit{background:var(--accent);color:var(--on-accent)}
+.tag.credit,.tag.gros{background:var(--accent);color:var(--on-accent)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tag.entree,:root:not([data-theme="light"]) .tag.paiement{color:#06210f}:root:not([data-theme="light"]) .tag.sortie{color:#3a0d08}}
 :root[data-theme="dark"] .tag.entree,:root[data-theme="dark"] .tag.paiement{color:#06210f}:root[data-theme="dark"] .tag.sortie{color:#3a0d08}
 
@@ -125,10 +128,10 @@ nav button[aria-current="page"]{color:var(--active)}
 .plan.current{border-color:var(--brand)}
 .plan .ph{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .plan .ph b{font-size:18px}
-.plan .price{font-size:26px;font-weight:800;margin:4px 0 8px}
+.plan .price{font-size:24px;font-weight:800;margin:4px 0 8px}
 .plan .price small{font-size:14px;font-weight:600;color:var(--muted)}
 .plan ul{margin:0 0 14px;padding-left:20px;color:var(--muted)}
-.plan ul li{margin:2px 0}
+.plan ul li{margin:2px 0;font-size:14px}
 .status{padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
 
 .empty{padding:20px 0;color:var(--muted)}
@@ -142,11 +145,11 @@ nav button[aria-current="page"]{color:var(--active)}
 .kv span{color:var(--muted)}
 .kv b{text-align:right}
 label{display:block;font-weight:600;margin:12px 0 4px}
-input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg)}
+input,select{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 6px}
 .one{display:grid;grid-template-columns:1fr;gap:10px;margin:14px 0 6px}
 .close{float:right;min-width:44px;min-height:44px;font-size:26px;color:var(--muted)}
-.owe{font-size:34px;font-weight:800;line-height:1.1;margin:2px 0 4px}
+.owe{font-size:32px;font-weight:800;line-height:1.1;margin:2px 0 4px}
 .owe.zero{color:var(--ok)}
 
 #toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(440px,calc(100% - 32px));background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:12px;font-weight:600;z-index:10;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -163,14 +166,22 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
 <script>
 (function(){
   /* ------------------------------------------------------------------
-     RÉGLAGES
+     RÉGLAGES & ABONNEMENTS
      ------------------------------------------------------------------ */
   var SB_URL = 'https://birbvdaxvxsaoifygzjc.supabase.co';
-  var SB_KEY = 'sb_publishable_dCpg01hgUWvYJ9C3XCslbw_PQtMxhkE'; // clé publique : sans danger dans l'app
-  var PAY_NUMBER = '';   // Ton numéro Wave / Orange Money pour recevoir les abonnements (ex. 77 123 45 67)
-  var LIM = { produits:8, clients:3 };
-  var PRICE = 2000;
+  var SB_KEY = 'sb_publishable_dCpg01hgUWvYJ9C3XCslbw_PQtMxhkE';
+  var ONLINE_PAY = true;
+  var PAY_WAVE = '+221 76 699 41 91';
+  var PAY_ORANGE = '+221 78 651 65 86';
+  var PAY_WHATSAPP = '221766994191';
   var DAY = 864e5;
+
+  // Plans d'abonnement SamaStock
+  var PLANS = {
+    starter: { name: 'Starter', price: 5000, limProducts: 25, limCustomers: 10, limSuppliers: 5, wholesale: false },
+    business: { name: 'Business', price: 10000, limProducts: 100, limCustomers: 50, limSuppliers: 25, wholesale: false },
+    pro_grossiste: { name: 'Pro Grossiste', price: 15000, limProducts: 99999, limCustomers: 99999, limSuppliers: 99999, wholesale: true }
+  };
 
   var sb = null;
   try{ sb = window.supabase.createClient(SB_URL, SB_KEY); }catch(e){ sb = null; }
@@ -179,24 +190,38 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
   var ui = { ready:false, view:'home', cart:{}, filter:'all', sheet:null, q:'', busy:false, authMode:'signup', authMsg:'', authErr:'' };
 
   function fresh(){
-    return { user:null, shop:null, sub:null, products:[], customers:[], sales:[], moves:[], payments:[], noItems:false, loadError:'' };
+    return { user:null, shop:null, sub:null, products:[], customers:[], suppliers:[], purchases:[], sales:[], moves:[], payments:[], supplierPayments:[], loadError:'' };
   }
 
+  function logoMark(n){
+    return '<svg width="'+n+'" height="'+n+'" viewBox="0 0 100 100" aria-hidden="true" style="flex:none"><rect width="100" height="100" rx="22" fill="#0F4C45"/><polygon points="50,20 78,35 50,50 22,35" fill="#FFD75E"/><polygon points="22,35 50,50 50,82 22,67" fill="#F5B301"/><polygon points="50,50 78,35 78,67 50,82" fill="#C98F00"/></svg>';
+  }
+  function brand(text){ return '<div class="brandrow">'+logoMark(56)+'<h1 class="logo">'+esc(text)+'</h1></div>'; }
+
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
-  function num(n){ return Number(n).toLocaleString('fr-FR'); }
+  function num(n){ return Number(n||0).toLocaleString('fr-FR'); }
   function fmt(n){ return num(n)+' FCFA'; }
   function $(id){ return document.getElementById(id); }
 
   /* ------------------------------------------------------------------
-     DONNÉES
+     DONNÉES & UTILITAIRES
      ------------------------------------------------------------------ */
   function byId(id){ return S.products.filter(function(p){return p.id===id;})[0]; }
   function custById(id){ return S.customers.filter(function(c){return c.id===id;})[0]; }
+  function suppById(id){ return S.suppliers.filter(function(s){return s.id===id;})[0]; }
   function activeProducts(){ return S.products.filter(function(p){return !p.archived;}); }
   function isLow(p){ return p.qty <= p.alert_threshold; }
   function isToday(t){ return new Date(t).toDateString() === new Date().toDateString(); }
-  function totalOwed(){ return S.customers.reduce(function(a,c){ return a+Math.max(0,c.balance); },0); }
+  function totalOwedCustomers(){ return S.customers.reduce(function(a,c){ return a+Math.max(0,c.balance); },0); }
+  function totalOwedSuppliers(){ return S.suppliers.reduce(function(a,s){ return a+Math.max(0,s.balance); },0); }
   function prodName(id){ var p=byId(id); return p?p.name:'Produit retiré'; }
+
+  function getItemPrice(p, qty){
+    if(p.wholesale_price && p.wholesale_min_qty && qty >= p.wholesale_min_qty){
+      return p.wholesale_price;
+    }
+    return p.sell_price;
+  }
 
   function todayStats(){
     var rev=0, profit=0, cash=0, count=0;
@@ -209,11 +234,19 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
     S.payments.forEach(function(o){ if(isToday(o.created_at)) cash+=o.amount; });
     return {rev:rev, profit:profit, cash:cash, count:count};
   }
+
   function cartTotals(){
-    var items=0,total=0;
-    Object.keys(ui.cart).forEach(function(k){ var q=ui.cart[k], p=byId(k); if(p&&q>0){ items+=q; total+=q*p.sell_price; } });
-    return {items:items,total:total};
+    var items=0, total=0;
+    Object.keys(ui.cart).forEach(function(k){
+      var q=ui.cart[k], p=byId(k);
+      if(p && q>0){
+        items+=q;
+        total+=q*getItemPrice(p, q);
+      }
+    });
+    return {items:items, total:total};
   }
+
   function timeLabel(t){
     var d=new Date(t), h=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
     return isToday(t) ? h : d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' '+h;
@@ -221,17 +254,39 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
   function dateLabel(t){ return new Date(t).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}); }
 
   function plan(){
-    var s=S.sub; if(!s) return {type:'gratuit'};
-    if(s.plan==='gratuit') return {type:'gratuit'};
+    var s=S.sub;
+    if(!s) return {type:'starter', name:'Starter', config:PLANS.starter};
+    var pKey = s.plan || 'starter';
+    if(pKey==='essai'){
+      var endEssai=new Date(s.ends_at).getTime();
+      if(endEssai < Date.now()) return {type:'starter', name:'Starter', config:PLANS.starter, expired:true};
+      return {type:'essai', name:'Essai Pro Grossiste', config:PLANS.pro_grossiste, days:Math.max(1,Math.ceil((endEssai-Date.now())/DAY)), end:endEssai};
+    }
+    var pConf = PLANS[pKey] || PLANS.starter;
     var end=new Date(s.ends_at).getTime();
-    if(end<Date.now()) return {type:'gratuit',expired:true};
-    return {type:s.plan,days:Math.max(1,Math.ceil((end-Date.now())/DAY)),end:end};
+    if(end<Date.now()) return {type:'starter', name:'Starter', config:PLANS.starter, expired:true};
+    return {type:pKey, name:pConf.name, config:pConf, days:Math.max(1,Math.ceil((end-Date.now())/DAY)), end:end};
   }
+
   function blocked(kind){
-    if(plan().type!=='gratuit') return false;
-    var n = kind==='produits' ? activeProducts().length : S.customers.length;
-    if(n>=LIM[kind]){
-      ui.sheet={type:'plan',why: kind==='produits' ? 'Le plan Gratuit permet '+LIM.produits+' produits au maximum.' : 'Le plan Gratuit permet '+LIM.clients+' clients à crédit au maximum.'};
+    var currentPlan = plan();
+    var cfg = currentPlan.config;
+    var n = 0;
+    var limit = 0;
+
+    if(kind==='produits'){ n = activeProducts().length; limit = cfg.limProducts; }
+    else if(kind==='clients'){ n = S.customers.length; limit = cfg.limCustomers; }
+    else if(kind==='fournisseurs'){ n = S.suppliers.length; limit = cfg.limSuppliers; }
+    else if(kind==='grossiste'){
+      if(!cfg.wholesale){
+        ui.sheet={type:'plan',why:'Les prix de vente en gros sont réservés au plan Pro Grossiste.'};
+        render(); return true;
+      }
+      return false;
+    }
+
+    if(n >= limit){
+      ui.sheet={type:'plan',why: 'Votre plan '+currentPlan.name+' permet au maximum '+limit+' '+kind+'.'};
       render(); return true;
     }
     return false;
@@ -241,35 +296,43 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
     var r0 = await sb.from('shops').select('*').maybeSingle();
     if(r0.error) throw r0.error;
     S.shop = r0.data;
-    if(!S.shop){ S.products=[]; S.customers=[]; S.sales=[]; S.moves=[]; S.payments=[]; S.sub=null; return; }
+    if(!S.shop){ S.products=[]; S.customers=[]; S.suppliers=[]; S.purchases=[]; S.sales=[]; S.moves=[]; S.payments=[]; S.supplierPayments=[]; S.sub=null; return; }
 
     async function loadSales(){
       var r = await sb.from('sales').select('id,customer_id,total,created_at,sale_items(product_name,qty,buy_price,sell_price)').order('created_at',{ascending:false}).limit(150);
       if(r.error){
         r = await sb.from('sales').select('id,customer_id,total,created_at').order('created_at',{ascending:false}).limit(150);
-        S.noItems = true;
-      } else { S.noItems = false; }
+      }
       return r;
     }
+
     var res = await Promise.all([
       sb.from('products').select('*').order('name'),
       sb.from('customer_balances').select('*').order('name'),
+      sb.from('supplier_balances').select('*').order('name'),
       loadSales(),
+      sb.from('supplier_purchases').select('*').order('created_at',{ascending:false}).limit(100),
       sb.from('stock_movements').select('id,product_id,kind,qty,created_at').order('created_at',{ascending:false}).limit(150),
       sb.from('debt_payments').select('id,customer_id,amount,created_at').order('created_at',{ascending:false}).limit(150),
+      sb.from('supplier_payments').select('id,supplier_id,amount,created_at').order('created_at',{ascending:false}).limit(150),
       sb.from('subscriptions').select('*').maybeSingle()
     ]);
-    res.forEach(function(r){ if(r.error) throw r.error; });
+
+    res.forEach(function(r){ if(r.error && r.error.code !== 'PGRST116') throw r.error; });
+
     S.products = res[0].data || [];
     S.customers = (res[1].data || []).map(function(c){ return {id:c.customer_id,name:c.name,phone:c.phone||'',balance:Number(c.balance)||0}; });
-    S.sales = res[2].data || [];
-    S.moves = res[3].data || [];
-    S.payments = res[4].data || [];
-    S.sub = res[5].data || null;
+    S.suppliers = (res[2].data || []).map(function(s){ return {id:s.supplier_id,name:s.name,phone:s.phone||'',address:s.address||'',balance:Number(s.balance)||0}; });
+    S.sales = res[3].data || [];
+    S.purchases = res[4].data || [];
+    S.moves = res[5].data || [];
+    S.payments = res[6].data || [];
+    S.supplierPayments = res[7].data || [];
+    S.sub = res[8].data || null;
   }
 
   /* ------------------------------------------------------------------
-     VUES
+     VUES PRINCIPALES
      ------------------------------------------------------------------ */
   var ICONS = {
     home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
@@ -278,9 +341,10 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
     stock:'<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
     more:'<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>'
   };
+
   function nav(){
-    var tabs=[['home','Accueil'],['sell','Vendre'],['debts','Dettes'],['stock','Stock'],['more','Plus']];
-    var cur = ui.view==='hist' ? 'more' : ui.view;
+    var tabs=[['home','Accueil'],['sell','Vendre'],['debts','Tiers'],['stock','Stock'],['more','Plus']];
+    var cur = (ui.view==='hist'||ui.view==='suppliers') ? 'more' : ui.view;
     return '<nav aria-label="Navigation principale">'+tabs.map(function(t){
       return '<button data-a="go" data-v="'+t[0]+'"'+(cur===t[0]?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+ICONS[t[0]]+'</svg>'+t[1]+'</button>';
     }).join('')+'</nav>';
@@ -288,67 +352,80 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
 
   function authV(){
     var signup = ui.authMode==='signup';
-    return '<main class="center"><h1 class="logo">SamaStock</h1>'+
-      '<p class="muted" style="margin:0 0 18px">Ton stock, tes ventes et les dettes de tes clients, dans ta poche.</p>'+
+    return '<main class="center">'+brand('SamaStock')+''+
+      '<p class="muted" style="margin:0 0 18px">Logiciel de gestion de stock, ventes & dettes pour commerçants et grossistes au Sénégal.</p>'+
       '<h2 style="margin:0 0 4px">'+(signup?'Créer mon compte':'Me connecter')+'</h2>'+
       '<form data-form="auth" novalidate>'+
-      '<label for="a-email">E-mail</label><input id="a-email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" placeholder="toi@exemple.com">'+
+      '<label for="a-email">E-mail</label><input id="a-email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" placeholder="ex: sangare@boutique.sn">'+
       '<label for="a-pass">Mot de passe</label><input id="a-pass" type="password" autocomplete="'+(signup?'new-password':'current-password')+'" placeholder="6 caractères minimum">'+
       '<div class="one"><button class="btn" type="submit">'+(signup?'Créer mon compte':'Me connecter')+'</button></div></form>'+
       (ui.authErr?'<div class="msg" role="alert">'+esc(ui.authErr)+'</div>':'')+
       (ui.authMsg?'<div class="msg info" role="status">'+esc(ui.authMsg)+'</div>':'')+
       '<p style="margin-top:14px"><button class="link" data-a="authToggle">'+(signup?'J\'ai déjà un compte':'Créer un compte')+'</button></p></main>';
   }
+
   function onboardV(){
-    return '<main class="center"><h1 class="logo">Bienvenue</h1>'+
-      '<p class="muted" style="margin:0 0 18px">Dernière étape : comment s\'appelle ta boutique ?</p>'+
-      '<form data-form="shop" novalidate><label for="s-name">Nom de la boutique</label><input id="s-name" type="text" autocomplete="organization" placeholder="Ex. Boutique Awa">'+
-      '<div class="one"><button class="btn" type="submit">Commencer</button></div></form>'+
+    return '<main class="center">'+brand('Bienvenue')+''+
+      '<p class="muted" style="margin:0 0 18px">Dernière étape : quel est le nom de votre commerce ?</p>'+
+      '<form data-form="shop" novalidate><label for="s-name">Nom du commerce / boutique</label><input id="s-name" type="text" autocomplete="organization" placeholder="Ex. Ets Ndiaye & Frères Grossiste">'+
+      '<div class="one"><button class="btn" type="submit">Commencer l\'essai gratuit 30 jours</button></div></form>'+
       '<p style="margin-top:14px"><button class="link" data-a="logout">Me déconnecter</button></p></main>';
   }
 
   function homeV(){
-    var s=todayStats(), low=activeProducts().filter(isLow), owed=totalOwed(), pl=plan();
+    var s=todayStats(), low=activeProducts().filter(isLow), custOwed=totalOwedCustomers(), suppOwed=totalOwedSuppliers(), pl=plan();
     var d=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
     d=d.charAt(0).toUpperCase()+d.slice(1);
     var banner='';
-    if(pl.expired) banner='<button class="banner" data-a="go" data-v="more">Ton abonnement a expiré. Tu es passé au plan Gratuit. <b>Voir l\'abonnement</b></button>';
-    else if(pl.type==='essai') banner='<button class="banner" data-a="go" data-v="more">Essai gratuit : <b>'+pl.days+' jour'+(pl.days>1?'s':'')+' restant'+(pl.days>1?'s':'')+'</b>. Voir l\'abonnement</button>';
-    else if(pl.type==='gratuit') banner='<button class="banner" data-a="go" data-v="more">Plan Gratuit : '+LIM.produits+' produits et '+LIM.clients+' clients à crédit. <b>Passer à Pro</b></button>';
+    if(pl.expired) banner='<button class="banner" data-a="go" data-v="more">Votre abonnement a expiré. <b>Activer un plan</b></button>';
+    else if(pl.type==='essai') banner='<button class="banner" data-a="go" data-v="more">Essai gratuit Pro Grossiste : <b>'+pl.days+' jour'+(pl.days>1?'s':'')+' restant'+(pl.days>1?'s':'')+'</b>. Voir les offres</button>';
+    else banner='<button class="banner" data-a="go" data-v="more">Plan <b>'+esc(pl.name)+'</b> actif ('+pl.days+' j). Modifier l\'abonnement</button>';
+
     var lowHTML = low.length ? low.map(function(p){
-      return '<button class="row" data-a="openProduct" data-id="'+esc(p.id)+'"><div><div class="name">'+esc(p.name)+'</div><div class="meta pill-low">Reste '+p.qty+', seuil '+p.alert_threshold+'</div></div><span class="btn small ghost">Réapprovisionner</span></button>';
-    }).join('') : '<div class="empty">Aucun produit en alerte. Ton stock est suffisant.</div>';
-    var first = !activeProducts().length ? '<div class="msg info" style="margin:0 0 12px">Commence par ajouter tes produits dans l\'onglet <b>Stock</b>.</div>' : '';
-    return '<div class="top"><h1>'+esc(S.shop.name)+'</h1><span class="date">'+esc(d)+'</span></div>'+banner+first+
+      return '<button class="row" data-a="openProduct" data-id="'+esc(p.id)+'"><div><div class="name">'+esc(p.name)+'</div><div class="meta pill-low">En stock : '+p.qty+' (Seuil : '+p.alert_threshold+')</div></div><span class="btn small ghost">Réapprovisionner</span></button>';
+    }).join('') : '<div class="empty">Aucun produit en alerte de stock.</div>';
+
+    var first = !activeProducts().length ? '<div class="msg info" style="margin:0 0 12px">Commencez par ajouter vos articles dans l\'onglet <b>Stock</b>.</div>' : '';
+
+    return '<div class="top"><div class="hrow">'+logoMark(34)+'<h1>'+esc(S.shop.name)+'</h1></div><span class="date">'+esc(d)+'</span></div>'+banner+first+
     '<section class="hero" aria-label="Résumé du jour"><div class="label">Ventes du jour</div>'+
       '<div class="big">'+num(s.rev)+'<small>FCFA</small></div>'+
-      '<div class="facts"><div><span>Bénéfice estimé</span><b>'+fmt(s.profit)+'</b></div><div><span>Argent encaissé</span><b>'+fmt(s.cash)+'</b></div></div>'+
-      '<button class="cta" data-a="go" data-v="sell">Enregistrer une vente</button></section>'+
+      '<div class="facts"><div><span>Bénéfice estimé</span><b>'+fmt(s.profit)+'</b></div><div><span>Cash encaissé</span><b>'+fmt(s.cash)+'</b></div></div>'+
+      '<button class="cta" data-a="go" data-v="sell">Nouvelle vente</button></section>'+
     '<div class="tiles">'+
-      '<button class="tile'+(owed>0?' warn':'')+'" data-a="go" data-v="debts"><span>Dettes des clients</span><b>'+fmt(owed)+'</b><em>'+(owed>0?'à récupérer':'aucune dette')+'</em></button>'+
-      '<button class="tile'+(low.length?' warn':'')+'" data-a="go" data-v="stock"><span>Bientôt en rupture</span><b>'+low.length+'</b><em>'+(low.length?'produit'+(low.length>1?'s':'')+' à commander':'tout va bien')+'</em></button></div>'+
-    '<h2>Produits à réapprovisionner</h2>'+lowHTML;
+      '<button class="tile'+(custOwed>0?' warn':'')+'" data-a="go" data-v="debts"><span>Dettes Clients</span><b>'+fmt(custOwed)+'</b><em>à récupérer</em></button>'+
+      '<button class="tile'+(suppOwed>0?' warn':'')+'" data-a="go" data-v="suppliers"><span>Dettes Fournisseurs</span><b>'+fmt(suppOwed)+'</b><em>à payer</em></button></div>'+
+    '<h2>Ruptures & réapprovisionnements ('+low.length+')</h2>'+lowHTML;
   }
 
   function sellList(){
     var q=ui.q.trim().toLowerCase();
     var all=activeProducts();
-    if(!all.length) return '<div class="empty">Aucun produit. Ajoute-en dans l\'onglet Stock pour commencer à vendre.</div>';
+    if(!all.length) return '<div class="empty">Aucun produit. Ajoutez vos articles dans Stock.</div>';
     var list=all.filter(function(p){ return !q || p.name.toLowerCase().indexOf(q)>-1; });
-    if(!list.length) return '<div class="empty">Aucun produit trouvé. Vérifie l\'orthographe ou ajoute-le dans Stock.</div>';
+    if(!list.length) return '<div class="empty">Aucun produit trouvé.</div>';
     return list.map(function(p){
       var q2=ui.cart[p.id]||0, out=p.qty<=0, ctl;
+      var curUnitPrice = getItemPrice(p, q2||1);
+      var isWholesaleApplied = p.wholesale_price && p.wholesale_min_qty && q2 >= p.wholesale_min_qty;
+      var priceBadge = isWholesaleApplied ? ' <span class="tag gros">Prix gros</span>' : '';
+
       if(out){ ctl='<span class="pill-low">Rupture</span>'; }
       else if(q2===0){ ctl='<button class="round" data-a="add" data-id="'+esc(p.id)+'" aria-label="Ajouter '+esc(p.name)+'">+</button>'; }
-      else { ctl='<div class="stepper"><button class="round minus" data-a="sub" data-id="'+esc(p.id)+'" aria-label="Retirer un '+esc(p.name)+'">−</button><b>'+q2+'</b><button class="round" data-a="add" data-id="'+esc(p.id)+'" aria-label="Ajouter un '+esc(p.name)+'"'+(q2>=p.qty?' disabled':'')+'>+</button></div>'; }
-      return '<div class="row'+(out?' off':'')+'"><div><div class="name">'+esc(p.name)+'</div><div class="meta">'+fmt(p.sell_price)+' &nbsp;|&nbsp; en stock : '+p.qty+'</div></div>'+ctl+'</div>';
+      else { ctl='<div class="stepper"><button class="round minus" data-a="sub" data-id="'+esc(p.id)+'">−</button><b>'+q2+'</b><button class="round" data-a="add" data-id="'+esc(p.id)+'"'+(q2>=p.qty?' disabled':'')+'>+</button></div>'; }
+
+      var wholesaleHint = p.wholesale_price && p.wholesale_min_qty ? ' &nbsp;|&nbsp; Gros: '+fmt(p.wholesale_price)+' (dès '+p.wholesale_min_qty+')' : '';
+
+      return '<div class="row'+(out?' off':'')+'"><div><div class="name">'+esc(p.name)+priceBadge+'</div><div class="meta">Prix: '+fmt(curUnitPrice)+wholesaleHint+' &nbsp;|&nbsp; Stock: '+p.qty+'</div></div>'+ctl+'</div>';
     }).join('');
   }
+
   function sellV(){
-    return '<div class="top"><h1>Nouvelle vente</h1></div>'+
-      '<label class="sr" for="q">Chercher un produit</label><input id="q" type="search" placeholder="Chercher un produit" value="'+esc(ui.q)+'" autocomplete="off">'+
+    return '<div class="top"><h1>Caisse / Vente</h1></div>'+
+      '<label class="sr" for="q">Chercher un produit</label><input id="q" type="search" placeholder="Rechercher un article..." value="'+esc(ui.q)+'" autocomplete="off">'+
       '<div id="plist">'+sellList()+'</div>';
   }
+
   function cartBar(){
     var t=cartTotals(), off=t.items?'':' disabled';
     return '<div class="cartbar"><div class="sum"><span>'+t.items+' article'+(t.items>1?'s':'')+'</span><b>'+fmt(t.total)+'</b></div>'+
@@ -356,169 +433,228 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
   }
 
   function debtsV(){
-    var owed=totalOwed();
+    var owed=totalOwedCustomers();
     var cs=S.customers.slice().sort(function(a,b){return b.balance-a.balance;});
     var rows=cs.map(function(c){
-      return '<button class="row" data-a="openClient" data-id="'+esc(c.id)+'"><div><div class="name">'+esc(c.name)+'</div><div class="meta">'+(c.phone?esc(c.phone):'Pas de téléphone')+'</div></div>'+
+      return '<button class="row" data-a="openClient" data-id="'+esc(c.id)+'"><div><div class="name">'+esc(c.name)+'</div><div class="meta">'+(c.phone?esc(c.phone):'Sans téléphone')+'</div></div>'+
         (c.balance>0?'<b class="pill-low">'+fmt(c.balance)+'</b>':'<span class="ok">Soldé</span>')+'</button>';
     }).join('');
     var n=S.customers.filter(function(c){return c.balance>0;}).length;
-    return '<div class="top"><h1>Dettes</h1><button class="btn small" data-a="newClient">Ajouter un client</button></div>'+
-      '<div class="tile'+(owed>0?' warn':'')+'" style="margin-bottom:8px"><span>Total à récupérer</span><b style="font-size:32px">'+fmt(owed)+'</b><em>'+n+' client'+(n>1?'s doivent':' doit')+' de l\'argent</em></div>'+
-      (rows||'<div class="empty">Aucun client. Quand tu vends à crédit, le client est ajouté ici.</div>');
+    return '<div class="top"><h1>Clients & Crédits</h1><button class="btn small" data-a="newClient">Nouveau client</button></div>'+
+      '<div class="tile'+(owed>0?' warn':'')+'" style="margin-bottom:12px"><span>Total crédits clients</span><b style="font-size:28px">'+fmt(owed)+'</b><em>'+n+' client'+(n>1?'s vous doivent':' doit')+' de l\'argent</em></div>'+
+      '<div class="chips"><button class="chip" data-a="go" data-v="debts" aria-pressed="true">Clients</button><button class="chip" data-a="go" data-v="suppliers" aria-pressed="false">Fournisseurs</button></div>'+
+      (rows||'<div class="empty">Aucun client enregistré.</div>');
+  }
+
+  function suppliersV(){
+    var owed=totalOwedSuppliers();
+    var sups=S.suppliers.slice().sort(function(a,b){return b.balance-a.balance;});
+    var rows=sups.map(function(s){
+      return '<button class="row" data-a="openSupplier" data-id="'+esc(s.id)+'"><div><div class="name">'+esc(s.name)+'</div><div class="meta">'+(s.phone?esc(s.phone):'Sans téléphone')+'</div></div>'+
+        (s.balance>0?'<b class="pill-low">'+fmt(s.balance)+'</b>':'<span class="ok">Réglé</span>')+'</button>';
+    }).join('');
+    var n=S.suppliers.filter(function(s){return s.balance>0;}).length;
+    return '<div class="top"><h1>Fournisseurs</h1><button class="btn small" data-a="newSupplier">Nouveau fournisseur</button></div>'+
+      '<div class="tile'+(owed>0?' warn':'')+'" style="margin-bottom:12px"><span>Dettes à payer aux fournisseurs</span><b style="font-size:28px">'+fmt(owed)+'</b><em>Vous devez à '+n+' fournisseur'+(n>1?'s':'')+'</em></div>'+
+      '<div class="chips"><button class="chip" data-a="go" data-v="debts" aria-pressed="false">Clients</button><button class="chip" data-a="go" data-v="suppliers" aria-pressed="true">Fournisseurs</button></div>'+
+      (rows||'<div class="empty">Aucun fournisseur enregistré.</div>');
   }
 
   function stockV(){
     var rows = activeProducts().map(function(p){
-      return '<button class="row" data-a="openProduct" data-id="'+esc(p.id)+'"><div><div class="name">'+esc(p.name)+'</div><div class="meta">Achat '+num(p.buy_price)+' &nbsp;|&nbsp; Vente '+num(p.sell_price)+' FCFA</div></div><span class="badge'+(isLow(p)?' low':'')+'" aria-label="Quantité en stock : '+p.qty+'">'+p.qty+'</span></button>';
+      var wholesaleText = p.wholesale_price ? ' | Gros '+num(p.wholesale_price)+' FCFA (≥'+p.wholesale_min_qty+')' : '';
+      return '<button class="row" data-a="openProduct" data-id="'+esc(p.id)+'"><div><div class="name">'+esc(p.name)+'</div><div class="meta">Achat '+num(p.buy_price)+' &nbsp;|&nbsp; Détail '+num(p.sell_price)+' FCFA'+wholesaleText+'</div></div><span class="badge'+(isLow(p)?' low':'')+'">'+p.qty+'</span></button>';
     }).join('');
-    return '<div class="top"><h1>Stock</h1><button class="btn small" data-a="openForm">Ajouter un produit</button></div>'+
-      (rows||'<div class="empty">Aucun produit. Appuie sur « Ajouter un produit » pour créer le premier.</div>');
+    return '<div class="top"><h1>Stock Produits</h1><button class="btn small" data-a="openForm">Ajouter un produit</button></div>'+
+      (rows||'<div class="empty">Aucun produit dans le stock. Appuyez sur « Ajouter un produit ».</div>');
   }
 
-  function planBox(kind){
-    var pl=plan(), cur = (kind==='gratuit' && pl.type==='gratuit') || (kind==='pro' && (pl.type==='pro'||pl.type==='essai'));
-    var badge = cur ? '<span class="tag vente">'+(pl.type==='essai'&&kind==='pro'?'Essai en cours':'Actuel')+'</span>' : '';
-    var btn = '';
-    if(kind==='pro' && pl.type!=='pro') btn='<button class="btn wide" data-a="openPlan">'+(pl.type==='essai'?'S\'abonner maintenant':'Passer à Pro')+'</button>';
-    var body = kind==='gratuit'
-      ? '<div class="ph"><b>Gratuit</b>'+badge+'</div><div class="price">0 <small>FCFA</small></div><ul><li>'+LIM.produits+' produits au maximum</li><li>'+LIM.clients+' clients à crédit au maximum</li><li>Ventes, stock et historique</li></ul>'
-      : '<div class="ph"><b>Pro</b>'+badge+'</div><div class="price">'+num(PRICE)+' <small>FCFA / mois</small></div><ul><li>Produits et clients à crédit illimités</li><li>Rappels de dette par WhatsApp</li><li>30 jours d\'essai gratuit</li></ul>';
-    return '<div class="plan'+(cur?' current':'')+'">'+body+btn+'</div>';
+  function planCard(key, pObj){
+    var pl=plan();
+    var cur = (pl.type===key) || (pl.type==='essai' && key==='pro_grossiste');
+    var badge = cur ? '<span class="tag vente">'+(pl.type==='essai'?'Essai en cours':'Plan Actuel')+'</span>' : '';
+    var btn = (!cur) ? '<button class="btn wide" data-a="selectPlan" data-plan="'+key+'">Choisir le plan '+pObj.name+'</button>' : '';
+
+    return '<div class="plan'+(cur?' current':'')+'"><div class="ph"><b>'+esc(pObj.name)+'</b>'+badge+'</div>'+
+      '<div class="price">'+num(pObj.price)+' <small>FCFA / mois</small></div>'+
+      '<ul><li>Jusqu\'à '+pObj.limProducts+' produits dans le stock</li>'+
+      '<li>Jusqu\'à '+pObj.limCustomers+' clients à crédit</li>'+
+      '<li>Jusqu\'à '+pObj.limSuppliers+' fournisseurs</li>'+
+      '<li>'+(pObj.wholesale ? '<b>Tarification & Ventes en gros dégressives</b>' : 'Ventes au détail uniquement')+'</li></ul>'+btn+'</div>';
   }
+
   function moreV(){
-    var pl=plan(), st;
-    if(pl.type==='pro') st='Abonnement Pro actif jusqu\'au <b>'+esc(dateLabel(pl.end))+'</b>.';
-    else if(pl.type==='essai') st='Essai gratuit : <b>'+pl.days+' jour'+(pl.days>1?'s':'')+' restant'+(pl.days>1?'s':'')+'</b>. Toutes les fonctions sont ouvertes.';
-    else st=pl.expired ? 'Ton abonnement a expiré. Tu utilises le plan Gratuit.' : 'Tu utilises le plan Gratuit.';
-    return '<div class="top"><h1>Plus</h1></div>'+
-      '<h2 style="margin-top:0">Abonnement</h2><div class="status">'+st+'</div>'+planBox('gratuit')+planBox('pro')+
-      '<button class="row" data-a="go" data-v="hist" style="margin-top:14px"><div><div class="name">Historique</div><div class="meta">Ventes, mouvements de stock et paiements</div></div><span aria-hidden="true">›</span></button>'+
-      '<p class="foot">Connecté : '+esc(S.user.email||'')+'<br>Boutique : '+esc(S.shop.name)+'<br>'+
+    var pl=plan();
+    var st = 'Plan actif : <b>'+esc(pl.name)+'</b> ('+(pl.days||30)+' jours restants)';
+    return '<div class="top"><h1>Abonnements & Plus</h1></div>'+
+      '<h2 style="margin-top:0">Votre abonnement</h2><div class="status" style="margin-bottom:14px">'+st+'</div>'+
+      planCard('starter', PLANS.starter)+
+      planCard('business', PLANS.business)+
+      planCard('pro_grossiste', PLANS.pro_grossiste)+
+      '<button class="row" data-a="go" data-v="hist" style="margin-top:18px"><div><div class="name">Historique des opérations</div><div class="meta">Ventes, réapprovisionnements et paiements</div></div><span>›</span></button>'+
+      '<p class="foot">Boutique : '+esc(S.shop.name)+'<br>Compte : '+esc(S.user.email||'')+'<br>'+
       '<button class="link" data-a="reload">Actualiser les données</button> <button class="link" data-a="logout">Me déconnecter</button></p>';
   }
 
   function histV(){
     var f=ui.filter;
-    var chips=[['all','Tout'],['vente','Ventes'],['stock','Stock'],['paiement','Paiements']].map(function(c){
+    var chips=[['all','Tout'],['vente','Ventes'],['stock','Stock'],['paiement','Paiements'],['achat','Achats']].map(function(c){
       return '<button class="chip" data-a="filter" data-f="'+c[0]+'" aria-pressed="'+(f===c[0])+'">'+c[1]+'</button>';
     }).join('');
     var items=[];
+
     S.sales.forEach(function(s){
       var cl = s.customer_id && custById(s.customer_id);
-      var meta = timeLabel(s.created_at) + (cl ? ' | Crédit : '+esc(cl.name) : '');
+      var meta = timeLabel(s.created_at) + (cl ? ' | Crédit Client : '+esc(cl.name) : '');
       var tags = '<span class="tag vente">Vente</span>'+(s.customer_id?'<span class="tag credit">Crédit</span>':'');
-      var its = s.sale_items;
-      if(its && its.length){
-        its.forEach(function(it){
-          items.push({ts:s.created_at,key:'vente',html:'<div class="row"><div><div class="name">'+tags+esc(it.product_name)+'</div><div class="meta">'+meta+'</div></div><div class="right"><b>−'+it.qty+'</b><div class="meta">'+fmt(it.qty*it.sell_price)+'</div></div></div>'});
-        });
-      } else {
-        items.push({ts:s.created_at,key:'vente',html:'<div class="row"><div><div class="name">'+tags+'Vente</div><div class="meta">'+meta+'</div></div><div class="right"><b>'+fmt(s.total)+'</b></div></div>'});
-      }
+      items.push({ts:s.created_at,key:'vente',html:'<div class="row"><div><div class="name">'+tags+'Vente total</div><div class="meta">'+meta+'</div></div><div class="right"><b>'+fmt(s.total)+'</b></div></div>'});
     });
+
+    S.purchases.forEach(function(p){
+      var sup = suppById(p.supplier_id);
+      items.push({ts:p.created_at,key:'achat',html:'<div class="row"><div><div class="name"><span class="tag sortie">Achat</span>'+esc(p.product_name)+'</div><div class="meta">'+timeLabel(p.created_at)+' | Fournisseur : '+esc(sup?sup.name:'Inconnu')+'</div></div><div class="right"><b>'+fmt(p.total)+'</b></div></div>'});
+    });
+
     S.moves.forEach(function(m){
       var entree=m.kind==='entree';
-      items.push({ts:m.created_at,key:'stock',html:'<div class="row"><div><div class="name"><span class="tag '+m.kind+'">'+(entree?'Entrée':'Sortie')+'</span>'+esc(prodName(m.product_id))+'</div><div class="meta">'+timeLabel(m.created_at)+'</div></div><div class="right"><b>'+(entree?'+':'−')+m.qty+'</b></div></div>'});
+      items.push({ts:m.created_at,key:'stock',html:'<div class="row"><div><div class="name"><span class="tag '+(entree?'entree':'sortie')+'">'+(entree?'Entrée':'Sortie')+'</span>'+esc(prodName(m.product_id))+'</div><div class="meta">'+timeLabel(m.created_at)+'</div></div><div class="right"><b>'+(entree?'+':'−')+m.qty+'</b></div></div>'});
     });
+
     S.payments.forEach(function(o){
       var c=custById(o.customer_id);
-      items.push({ts:o.created_at,key:'paiement',html:'<div class="row"><div><div class="name"><span class="tag paiement">Paiement</span>'+esc(c?c.name:'Client')+'</div><div class="meta">'+timeLabel(o.created_at)+'</div></div><div class="right"><b class="ok">+'+fmt(o.amount)+'</b></div></div>'});
+      items.push({ts:o.created_at,key:'paiement',html:'<div class="row"><div><div class="name"><span class="tag paiement">Règlement Client</span>'+esc(c?c.name:'Client')+'</div><div class="meta">'+timeLabel(o.created_at)+'</div></div><div class="right"><b class="ok">+'+fmt(o.amount)+'</b></div></div>'});
     });
+
+    S.supplierPayments.forEach(function(sp){
+      var s=suppById(sp.supplier_id);
+      items.push({ts:sp.created_at,key:'paiement',html:'<div class="row"><div><div class="name"><span class="tag sortie">Paiement Fournisseur</span>'+esc(s?s.name:'Fournisseur')+'</div><div class="meta">'+timeLabel(sp.created_at)+'</div></div><div class="right"><b class="pill-low">−'+fmt(sp.amount)+'</b></div></div>'});
+    });
+
     items=items.filter(function(i){return f==='all'||i.key===f;}).sort(function(a,b){return new Date(b.ts)-new Date(a.ts);});
     return '<div class="top"><h1>Historique</h1></div><div class="chips">'+chips+'</div>'+
-      (items.length?items.map(function(i){return i.html;}).join(''):'<div class="empty">Aucun mouvement pour ce filtre.</div>');
+      (items.length?items.map(function(i){return i.html;}).join(''):'<div class="empty">Aucun historique pour ce filtre.</div>');
   }
 
   /* ------------------------------------------------------------------
-     FENÊTRES
+     SHEETS & MODALES
      ------------------------------------------------------------------ */
   function sheetWrap(label,inner){
     return '<div class="backdrop" data-a="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="'+esc(label)+'"><button class="close" data-a="close" aria-label="Fermer">×</button>'+inner+'</div></div>';
   }
+
   function sheetHTML(){
     var s=ui.sheet; if(!s) return '';
 
     if(s.type==='product'){
       var p=byId(s.id); if(!p) return '';
+      var wholesaleInfo = p.wholesale_price ? '<span>Prix Gros (≥'+p.wholesale_min_qty+')</span><b>'+fmt(p.wholesale_price)+'</b>' : '<span>Prix Gros</span><b>Non configuré</b>';
       return sheetWrap(p.name,'<h3>'+esc(p.name)+'</h3>'+
-        '<div class="kv"><span>En stock</span><b'+(isLow(p)?' class="pill-low"':'')+'>'+p.qty+'</b><span>Prix d\'achat</span><b>'+fmt(p.buy_price)+'</b><span>Prix de vente</span><b>'+fmt(p.sell_price)+'</b><span>Marge par unité</span><b>'+fmt(p.sell_price-p.buy_price)+'</b><span>Seuil d\'alerte</span><b>'+p.alert_threshold+'</b></div>'+
-        '<label for="m-qty">Quantité</label><input id="m-qty" type="number" inputmode="numeric" min="1" value="1">'+
-        '<div class="two"><button class="btn" data-a="entree" data-id="'+esc(p.id)+'">Ajouter une entrée</button><button class="btn ghost" data-a="sortie" data-id="'+esc(p.id)+'">Enregistrer une sortie</button></div>'+
-        '<button class="link" data-a="openForm" data-id="'+esc(p.id)+'">Modifier le produit</button> <button class="link" data-a="archive" data-id="'+esc(p.id)+'">Retirer ce produit</button>');
+        '<div class="kv"><span>Quantité en stock</span><b'+(isLow(p)?' class="pill-low"':'')+'>'+p.qty+'</b><span>Prix d\'achat unitaire</span><b>'+fmt(p.buy_price)+'</b><span>Prix de vente détail</span><b>'+fmt(p.sell_price)+'</b>'+wholesaleInfo+'<span>Seuil alerte stock</span><b>'+p.alert_threshold+'</b></div>'+
+        '<label for="m-qty">Quantité d\'entrée/sortie</label><input id="m-qty" type="number" inputmode="numeric" min="1" value="1">'+
+        '<div class="two"><button class="btn" data-a="entree" data-id="'+esc(p.id)+'">+ Entrée Stock</button><button class="btn ghost" data-a="sortie" data-id="'+esc(p.id)+'">− Sortie Stock</button></div>'+
+        '<button class="link" data-a="openForm" data-id="'+esc(p.id)+'">Modifier la fiche produit</button> <button class="link" data-a="archive" data-id="'+esc(p.id)+'">Archiver ce produit</button>');
     }
 
     if(s.type==='form'){
-      var p2 = s.id ? byId(s.id) : {name:'',buy_price:'',sell_price:'',qty:'',alert_threshold:10};
+      var p2 = s.id ? byId(s.id) : {name:'',buy_price:'',sell_price:'',wholesale_price:'',wholesale_min_qty:'',qty:'',alert_threshold:10};
+      var allowWholesale = plan().config.wholesale;
       return sheetWrap('Produit','<h3>'+(s.id?'Modifier le produit':'Nouveau produit')+'</h3>'+
-        '<label for="f-name">Nom du produit</label><input id="f-name" type="text" value="'+esc(p2.name)+'" placeholder="Ex. Sucre 1 kg">'+
-        '<label for="f-buy">Prix d\'achat (FCFA)</label><input id="f-buy" type="number" inputmode="numeric" min="0" value="'+esc(p2.buy_price)+'">'+
-        '<label for="f-sell">Prix de vente (FCFA)</label><input id="f-sell" type="number" inputmode="numeric" min="0" value="'+esc(p2.sell_price)+'">'+
-        '<label for="f-qty">Quantité en stock</label><input id="f-qty" type="number" inputmode="numeric" min="0" value="'+esc(p2.qty)+'">'+
-        '<label for="f-th">Seuil d\'alerte</label><input id="f-th" type="number" inputmode="numeric" min="0" value="'+esc(p2.alert_threshold)+'">'+
+        '<label for="f-name">Nom de l\'article / produit</label><input id="f-name" type="text" value="'+esc(p2.name)+'" placeholder="Ex. Sac de Riz 50kg, Huile 5L, etc.">'+
+        '<div class="two"><div><label for="f-buy">Prix Achat (FCFA)</label><input id="f-buy" type="number" inputmode="numeric" min="0" value="'+esc(p2.buy_price)+'"></div>'+
+        '<div><label for="f-sell">Prix Vente Détail (FCFA)</label><input id="f-sell" type="number" inputmode="numeric" min="0" value="'+esc(p2.sell_price)+'"></div></div>'+
+        (allowWholesale ? '<div class="two"><div><label for="f-wprice">Prix Vente Gros (FCFA)</label><input id="f-wprice" type="number" inputmode="numeric" min="0" value="'+esc(p2.wholesale_price||'')" placeholder="Optionnel"></div>'+
+        '<div><label for="f-wqty">Qté Min. pour Prix Gros</label><input id="f-wqty" type="number" inputmode="numeric" min="2" value="'+esc(p2.wholesale_min_qty||'')" placeholder="Ex. 10"></div></div>' :
+        '<p class="muted" style="font-size:13px;margin:4px 0">💡 Passer au plan <b>Pro Grossiste</b> pour activer les prix de vente en gros dégressifs.</p>')+
+        '<div class="two"><div><label for="f-qty">Stock initial</label><input id="f-qty" type="number" inputmode="numeric" min="0" value="'+esc(p2.qty)+'"></div>'+
+        '<div><label for="f-th">Seuil d\'alerte</label><input id="f-th" type="number" inputmode="numeric" min="0" value="'+esc(p2.alert_threshold)+'"></div></div>'+
         '<div class="one"><button class="btn" data-a="saveForm">Enregistrer le produit</button></div>');
     }
 
     if(s.type==='credit'){
       var t=cartTotals();
       var rows=S.customers.map(function(c){
-        return '<button class="row pick" data-a="creditPick" data-id="'+esc(c.id)+'" aria-pressed="'+(s.sel===c.id)+'"><div class="name">'+esc(c.name)+'</div><div class="meta">'+(c.balance>0?'Doit déjà '+fmt(c.balance):'Aucune dette')+'</div></button>';
+        return '<button class="row pick" data-a="creditPick" data-id="'+esc(c.id)+'" aria-pressed="'+(s.sel===c.id)+'"><div class="name">'+esc(c.name)+'</div><div class="meta">'+(c.balance>0?'Dette actuelle : '+fmt(c.balance):'Aucune dette')+'</div></button>';
       }).join('');
-      return sheetWrap('Vente à crédit','<h3>Vente à crédit</h3><p class="muted" style="margin:0 0 8px">Total : <b style="color:var(--ink)">'+fmt(t.total)+'</b>. Choisis qui paiera plus tard.</p>'+rows+
+      return sheetWrap('Vente à crédit','<h3>Vente à crédit client</h3><p class="muted" style="margin:0 0 8px">Montant total de la vente : <b>'+fmt(t.total)+'</b></p>'+rows+
         '<h2 style="margin:16px 0 0">Nouveau client</h2>'+
-        '<label for="c-name">Nom</label><input id="c-name" type="text" placeholder="Ex. Awa Diop" autocomplete="off">'+
-        '<label for="c-phone">Téléphone (facultatif)</label><input id="c-phone" type="tel" inputmode="tel" placeholder="Ex. 77 123 45 67">'+
-        '<div class="one"><button class="btn" data-a="creditConfirm">Enregistrer la dette</button></div>');
+        '<label for="c-name">Nom complet</label><input id="c-name" type="text" placeholder="Ex. Ousmane Diallo" autocomplete="off">'+
+        '<label for="c-phone">Téléphone WhatsApp</label><input id="c-phone" type="tel" inputmode="tel" placeholder="Ex. 77 123 45 67">'+
+        '<div class="one"><button class="btn" data-a="creditConfirm">Valider la vente à crédit</button></div>');
     }
 
     if(s.type==='clientForm'){
-      return sheetWrap('Nouveau client','<h3>Nouveau client</h3>'+
-        '<label for="c-name">Nom</label><input id="c-name" type="text" placeholder="Ex. Awa Diop" autocomplete="off">'+
-        '<label for="c-phone">Téléphone (facultatif)</label><input id="c-phone" type="tel" inputmode="tel" placeholder="Ex. 77 123 45 67">'+
+      return sheetWrap('Nouveau client','<h3>Ajouter un client</h3>'+
+        '<label for="c-name">Nom complet</label><input id="c-name" type="text" placeholder="Ex. Fatou Sow" autocomplete="off">'+
+        '<label for="c-phone">Téléphone</label><input id="c-phone" type="tel" inputmode="tel" placeholder="Ex. 78 651 00 00">'+
         '<div class="one"><button class="btn" data-a="saveClient">Enregistrer le client</button></div>');
+    }
+
+    if(s.type==='supplierForm'){
+      return sheetWrap('Nouveau fournisseur','<h3>Ajouter un fournisseur</h3>'+
+        '<label for="sup-name">Nom de l\'entreprise / Fournisseur</label><input id="sup-name" type="text" placeholder="Ex. Grands Moulins de Dakar" autocomplete="off">'+
+        '<label for="sup-phone">Téléphone</label><input id="sup-phone" type="tel" inputmode="tel" placeholder="Ex. 33 800 00 00">'+
+        '<label for="sup-addr">Adresse / Marché</label><input id="sup-addr" type="text" placeholder="Ex. Marché Sandaga / Zone Industrielle">'+
+        '<div class="one"><button class="btn" data-a="saveSupplier">Enregistrer le fournisseur</button></div>');
+    }
+
+    if(s.type==='purchaseForm'){
+      var sup=suppById(s.supplierId); if(!sup) return '';
+      var prodsOpts = activeProducts().map(function(p){ return '<option value="'+esc(p.id)+'">'+esc(p.name)+' (Prix Achat actuel : '+num(p.buy_price)+' FCFA)</option>'; }).join('');
+      return sheetWrap('Achat Fournisseur','<h3>Achat de stock — '+esc(sup.name)+'</h3>'+
+        '<label for="p-prod">Sélectionner le produit</label><select id="p-prod">'+prodsOpts+'</select>'+
+        '<div class="two"><div><label for="p-qty">Quantité achetée</label><input id="p-qty" type="number" inputmode="numeric" min="1" value="1"></div>'+
+        '<div><label for="p-unit">Prix Achat Unitaire (FCFA)</label><input id="p-unit" type="number" inputmode="numeric" min="0" placeholder="Ex. 15000"></div></div>'+
+        '<label for="p-paid">Montant payé immédiatement (FCFA)</label><input id="p-paid" type="number" inputmode="numeric" min="0" value="0" placeholder="0 si total à crédit">'+
+        '<div class="one"><button class="btn" data-a="savePurchase" data-supid="'+esc(sup.id)+'">Valider l\'achat et réapprovisionner</button></div>');
     }
 
     if(s.type==='client'){
       var c=custById(s.id); if(!c) return '';
-      var b=c.balance, pl=plan();
-      var opsAll=[];
-      S.sales.forEach(function(x){ if(x.customer_id===c.id) opsAll.push({d:true,amount:x.total,ts:x.created_at}); });
-      S.payments.forEach(function(x){ if(x.customer_id===c.id) opsAll.push({d:false,amount:x.amount,ts:x.created_at}); });
-      var ops=opsAll.sort(function(x,y){return new Date(y.ts)-new Date(x.ts);}).slice(0,6).map(function(o){
-        return '<div class="row"><div><div class="name">'+(o.d?'Crédit':'Paiement')+'</div><div class="meta">'+timeLabel(o.ts)+'</div></div><div class="right"><b class="'+(o.d?'pill-low':'ok')+'">'+(o.d?'+':'−')+num(o.amount)+' FCFA</b></div></div>';
-      }).join('');
+      var b=c.balance;
       var remind='';
       if(b>0 && c.phone){
-        if(pl.type==='gratuit') remind='<button class="btn ghost wide" data-a="openPlan" data-why="Les rappels WhatsApp sont inclus dans le plan Pro.">Envoyer un rappel WhatsApp (Pro)</button>';
-        else{
-          var dg=c.phone.replace(/\D/g,''); if(dg.length===9) dg='221'+dg;
-          var txt='Bonjour '+c.name+', petit rappel : vous avez une dette de '+fmt(b)+' à la boutique '+S.shop.name+'. Merci !';
-          remind='<a class="btn ghost wide" target="_blank" rel="noopener" href="https://wa.me/'+dg+'?text='+encodeURIComponent(txt)+'">Envoyer un rappel WhatsApp</a>';
-        }
+        var dg=c.phone.replace(/\D/g,''); if(dg.length===9) dg='221'+dg;
+        var txt='Bonjour '+c.name+', nous vous rappelons que vous avez un solde de '+fmt(b)+' à régler à la boutique '+S.shop.name+'. Merci !';
+        remind='<a class="btn ghost wide" style="margin-top:8px" target="_blank" rel="noopener" href="https://wa.me/'+dg+'?text='+encodeURIComponent(txt)+'">Rappel WhatsApp Client</a>';
       }
       var pay = b>0
-        ? '<label for="p-amt">Montant payé (FCFA)</label><input id="p-amt" type="number" inputmode="numeric" min="1" placeholder="Ex. 1000">'+
-          '<div class="two"><button class="btn ghost" data-a="payAll" data-amt="'+b+'">Tout payer</button><button class="btn" data-a="payDebt" data-id="'+esc(c.id)+'">Enregistrer le paiement</button></div>'+remind
-        : '<p class="ok">Dette soldée. Ce client ne doit rien.</p>';
-      return sheetWrap(c.name,'<h3>'+esc(c.name)+'</h3><div class="muted">'+(c.phone?esc(c.phone):'Pas de téléphone')+'</div>'+
-        '<div class="muted" style="margin-top:10px">Dette actuelle</div><div class="owe'+(b>0?'':' zero')+'">'+fmt(Math.max(0,b))+'</div>'+pay+
-        '<h2 style="margin-top:20px">Dernières opérations</h2>'+(ops||'<div class="empty">Aucune opération.</div>'));
+        ? '<label for="p-amt">Montant versé par le client (FCFA)</label><input id="p-amt" type="number" inputmode="numeric" min="1" placeholder="Ex. 5000">'+
+          '<div class="two"><button class="btn ghost" data-a="payAll" data-amt="'+b+'">Solde total</button><button class="btn" data-a="payDebt" data-id="'+esc(c.id)+'">Enregistrer le versement</button></div>'+remind
+        : '<p class="ok">Compte client en règle. Aucune dette.</p>';
+      return sheetWrap(c.name,'<h3>'+esc(c.name)+'</h3><div class="muted">'+(c.phone?esc(c.phone):'Sans téléphone')+'</div>'+
+        '<div class="muted" style="margin-top:10px">Reste à payer par le client</div><div class="owe'+(b>0?'':' zero')+'">'+fmt(Math.max(0,b))+'</div>'+pay);
+    }
+
+    if(s.type==='supplier'){
+      var sup=suppById(s.id); if(!sup) return '';
+      var b=sup.balance;
+      var pay = b>0
+        ? '<label for="sp-amt">Montant payé au fournisseur (FCFA)</label><input id="sp-amt" type="number" inputmode="numeric" min="1" placeholder="Ex. 100000">'+
+          '<div class="two"><button class="btn ghost" data-a="payAllSupplier" data-amt="'+b+'">Régler tout</button><button class="btn" data-a="paySupplierDebt" data-id="'+esc(sup.id)+'">Enregistrer le paiement</button></div>'
+        : '<p class="ok">Dette fournisseur totalement réglée.</p>';
+      return sheetWrap(sup.name,'<h3>'+esc(sup.name)+'</h3><div class="muted">'+(sup.phone?esc(sup.phone):'Sans téléphone')+' &nbsp;|&nbsp; '+(sup.address?esc(sup.address):'Sans adresse')+'</div>'+
+        '<div class="muted" style="margin-top:10px">Dette envers le fournisseur</div><div class="owe'+(b>0?'':' zero')+'">'+fmt(Math.max(0,b))+'</div>'+pay+
+        '<div class="one" style="margin-top:16px"><button class="btn ghost" data-a="openPurchaseForm" data-id="'+esc(sup.id)+'">+ Enregistrer un Achat / Bon de livraison</button></div>');
     }
 
     if(s.type==='plan'){
+      var targetKey = s.selectedPlan || 'pro_grossiste';
+      var targetPlan = PLANS[targetKey] || PLANS.pro_grossiste;
       var pay2;
-      var who='Bonjour, je veux activer SamaStock Pro pour la boutique '+S.shop.name+' (compte : '+(S.user.email||'')+').';
-      if(PAY_NUMBER){
-        var dn=PAY_NUMBER.replace(/\D/g,''); if(dn.length===9) dn='221'+dn;
-        pay2='<ol style="margin:6px 0 12px;padding-left:20px"><li>Envoie <b>'+fmt(PRICE)+'</b> par Wave ou Orange Money au <b>'+esc(PAY_NUMBER)+'</b>.</li><li>Préviens-nous sur WhatsApp avec la preuve de paiement.</li><li>Ton compte Pro est activé rapidement.</li></ol>'+
-          '<div class="one"><a class="btn" target="_blank" rel="noopener" href="https://wa.me/'+dn+'?text='+encodeURIComponent(who)+'">Prévenir sur WhatsApp</a></div>';
+      var who='Bonjour, je veux souscrire au plan SamaStock '+targetPlan.name+' ('+fmt(targetPlan.price)+'/mois) pour la boutique '+S.shop.name+' (compte: '+(S.user.email||'')+').';
+      if(PAY_WAVE || PAY_ORANGE){
+        var dn=PAY_WHATSAPP;
+        pay2='<div class="kv" style="margin:8px 0 4px"><span>Wave</span><b>'+esc(PAY_WAVE)+'</b><span>Orange Money</span><b>'+esc(PAY_ORANGE)+'</b></div>'+
+          '<ol style="margin:6px 0 12px;padding-left:20px"><li>Envoyez <b>'+fmt(targetPlan.price)+'</b> à l\'un de ces deux numéros.</li><li>Contactez-nous sur WhatsApp avec votre reçu.</li><li>Activation immédiate de votre compte.</li></ol>'+
+          '<div class="one"><a class="btn" target="_blank" rel="noopener" href="https://wa.me/'+dn+'?text='+encodeURIComponent(who)+'">Activer via WhatsApp</a></div>';
       } else {
-        pay2='<p class="muted" style="margin:6px 0 12px">Contacte l\'équipe SamaStock pour activer ton abonnement Pro. Le paiement se fait par Wave ou Orange Money.</p>';
+        pay2='<p class="muted" style="margin:6px 0 12px">Contactez l\'équipe SamaStock pour activer votre formule.</p>';
       }
-      return sheetWrap('Passer à Pro','<h3>Passer à Pro</h3>'+
-        (s.why?'<p style="margin:0 0 10px">'+esc(s.why)+'</p>':'')+
-        '<div class="owe">'+num(PRICE)+' <small style="font-size:16px;font-weight:600">FCFA / mois</small></div>'+
-        '<ul class="muted" style="margin:6px 0 12px;padding-left:20px"><li>Produits et clients à crédit illimités</li><li>Rappels de dette par WhatsApp</li></ul>'+pay2);
+      return sheetWrap('Activer '+targetPlan.name,'<h3>Plan '+esc(targetPlan.name)+'</h3>'+
+        (s.why?'<p style="margin:0 0 10px;color:var(--danger);font-weight:600">'+esc(s.why)+'</p>':'')+
+        '<div class="owe">'+num(targetPlan.price)+' <small style="font-size:16px;font-weight:600">FCFA / mois</small></div>'+
+        '<ul class="muted" style="margin:6px 0 12px;padding-left:20px"><li>Capacité : '+targetPlan.limProducts+' produits | '+targetPlan.limCustomers+' clients</li><li>'+(targetPlan.wholesale?'Tarification Gros automatique incluse':'Vente détail')+'</li></ul>'+
+        (ONLINE_PAY ? '<div class="one" style="margin-top:6px"><button class="btn" data-a="payOnline" data-plan="'+targetKey+'">Payer '+fmt(targetPlan.price)+' en ligne (PayDunya / Wave / OM)</button></div><div class="muted" style="text-align:center;font-weight:600;margin:8px 0">ou par transfert direct</div>' : '')+pay2);
     }
     return '';
   }
@@ -527,18 +663,18 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
     var old=document.getElementById('main'), top=old?old.scrollTop:0;
     var html;
     if(!sb){
-      html='<main class="center"><h1 class="logo">SamaStock</h1><div class="msg" role="alert">Impossible de charger l\'application. Vérifie ta connexion internet et recharge la page.</div><div class="one"><button class="btn" data-a="reloadPage">Recharger</button></div></main>';
+      html='<main class="center">'+brand('SamaStock')+'<div class="msg" role="alert">Connexion à la base de données impossible. Vérifiez internet.</div><div class="one"><button class="btn" data-a="reloadPage">Recharger</button></div></main>';
     } else if(!ui.ready){
-      html='<main class="center"><h1 class="logo">SamaStock</h1><p class="muted">Chargement…</p></main>';
+      html='<main class="center">'+brand('SamaStock')+'<p class="muted">Chargement de votre espace...</p></main>';
     } else if(S.loadError){
-      html='<main class="center"><h1 class="logo">SamaStock</h1><div class="msg" role="alert">'+esc(S.loadError)+'</div><div class="one"><button class="btn" data-a="retry">Réessayer</button><button class="btn ghost" data-a="logout">Me déconnecter</button></div></main>';
+      html='<main class="center">'+brand('SamaStock')+'<div class="msg" role="alert">'+esc(S.loadError)+'</div><div class="one"><button class="btn" data-a="retry">Réessayer</button><button class="btn ghost" data-a="logout">Me déconnecter</button></div></main>';
     } else if(!S.user){
       html=authV();
     } else if(!S.shop){
       html=onboardV();
     } else {
       var v=ui.view;
-      var body = v==='home'?homeV():v==='sell'?sellV():v==='debts'?debtsV():v==='stock'?stockV():v==='more'?moreV():histV();
+      var body = v==='home'?homeV():v==='sell'?sellV():v==='debts'?debtsV():v==='suppliers'?suppliersV():v==='stock'?stockV():v==='more'?moreV():histV();
       html='<main id="main">'+body+'</main>'+(v==='sell'?cartBar():'')+nav()+sheetHTML();
     }
     $('app').innerHTML=html;
@@ -554,13 +690,10 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
 
   function fail(e){
     var m=(e&&e.message)?e.message:String(e||'');
-    if(m.indexOf('LIMITE_PRODUITS')>-1){ ui.sheet={type:'plan',why:'Le plan Gratuit permet '+LIM.produits+' produits au maximum.'}; render(); return; }
-    if(m.indexOf('LIMITE_CLIENTS')>-1){ ui.sheet={type:'plan',why:'Le plan Gratuit permet '+LIM.clients+' clients à crédit au maximum.'}; render(); return; }
-    if(m.indexOf('PAIEMENT_TROP_ELEVE')>-1){ toast('Ce montant dépasse la dette du client.',true); return; }
-    if(m.indexOf('Stock insuffisant')>-1){ toast(m+'.',true); return; }
-    if(/fetch|network|Load failed/i.test(m)){ toast('Pas de connexion. Réessaie quand tu as du réseau.',true,4000); return; }
-    toast('Une erreur est survenue : '+m,true,4500);
+    if(/fetch|network|Load failed/i.test(m)){ toast('Problème de réseau. Réessayez.',true,4000); return; }
+    toast('Erreur : '+m,true,4500);
   }
+
   async function run(fn){
     if(ui.busy) return;
     ui.busy=true;
@@ -569,73 +702,60 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
   }
 
   /* ------------------------------------------------------------------
-     COMPTE
+     ACTIONS COMPTE & AUTH
      ------------------------------------------------------------------ */
   function authError(e){
     var m=(e&&e.message)||'';
     if(/Invalid login/i.test(m)) return 'E-mail ou mot de passe incorrect.';
-    if(/already registered|already been registered/i.test(m)) return 'Un compte existe déjà avec cet e-mail. Connecte-toi.';
-    if(/password/i.test(m) && /(short|least|weak|characters)/i.test(m)) return 'Mot de passe trop court : 6 caractères minimum.';
-    if(/not confirmed/i.test(m)) return 'Confirme d\'abord ton e-mail avec le lien que tu as reçu.';
-    if(/rate limit|too many/i.test(m)) return 'Trop d\'essais. Attends quelques minutes puis réessaie.';
-    if(/fetch|network|Load failed/i.test(m)) return 'Pas de connexion. Réessaie quand tu as du réseau.';
-    if(/valid email|invalid.*email/i.test(m)) return 'Cette adresse e-mail n\'est pas valide.';
-    return 'Erreur : '+m;
+    if(/already registered/i.test(m)) return 'Un compte existe déjà avec cet e-mail.';
+    if(/password/i.test(m)) return 'Mot de passe trop court (6 caractères minimum).';
+    return 'Erreur d\'accès : '+m;
   }
+
   async function submitAuth(){
     var email=$('a-email').value.trim(), pass=$('a-pass').value;
     ui.authErr=''; ui.authMsg='';
-    if(!email || email.indexOf('@')<1){ ui.authErr='Écris ton adresse e-mail.'; return render(); }
+    if(!email || email.indexOf('@')<1){ ui.authErr='Saisissez une adresse e-mail valide.'; return render(); }
     if(pass.length<6){ ui.authErr='Mot de passe trop court : 6 caractères minimum.'; return render(); }
     if(ui.authMode==='signup'){
       var r=await sb.auth.signUp({email:email,password:pass});
       if(r.error){ ui.authErr=authError(r.error); return render(); }
       if(r.data && r.data.session){ S.user=r.data.session.user; await afterLogin(); return; }
-      ui.authMode='login'; ui.authMsg='Compte créé. Ouvre l\'e-mail de confirmation que tu as reçu, puis connecte-toi ici.'; render(); return;
+      ui.authMode='login'; ui.authMsg='Compte créé. Veuillez vous connecter.'; render(); return;
     }
     var r2=await sb.auth.signInWithPassword({email:email,password:pass});
     if(r2.error){ ui.authErr=authError(r2.error); return render(); }
     S.user=r2.data.user; await afterLogin();
   }
+
   async function afterLogin(){
     S.loadError='';
-    try{ await refresh(); }catch(e){ S.loadError='Impossible de charger tes données. '+((e&&e.message)||''); }
+    try{ await refresh(); }catch(e){ S.loadError='Impossible de charger vos données. '+((e&&e.message)||''); }
     ui.view='home'; ui.sheet=null; ui.cart={}; render();
   }
+
   async function submitShop(){
     var name=$('s-name').value.trim();
-    if(!name) return toast('Écris le nom de ta boutique.',true);
+    if(!name) return toast('Saisissez le nom de votre commerce.',true);
     var r=await sb.from('shops').insert({owner_id:S.user.id,name:name});
     if(r.error) return fail(r.error);
     await refresh(); ui.view='home'; render();
-    toast('Boutique créée. Ton essai gratuit de 30 jours commence.',false,3800);
+    toast('Bienvenue ! Votre essai gratuit Pro Grossiste de 30 jours commence.',false,4000);
   }
 
   /* ------------------------------------------------------------------
-     VENTES, STOCK, DETTES
+     ACTIONS MÉTIER : VENTES, STOCK, FOURNISSEURS
      ------------------------------------------------------------------ */
-  function snapshotQty(){ var m={}; S.products.forEach(function(p){ m[p.id]={qty:p.qty,th:p.alert_threshold}; }); return m; }
-  function newAlerts(before){
-    var out=[];
-    S.products.forEach(function(p){
-      var b=before[p.id]; if(!b || p.archived) return;
-      if(b.qty>b.th && p.qty<=p.alert_threshold) out.push(p.name+' (reste '+p.qty+')');
-    });
-    return out;
-  }
-
   async function completeSale(cid){
     var items=Object.keys(ui.cart).filter(function(k){return ui.cart[k]>0;}).map(function(k){return {product_id:k,qty:ui.cart[k]};});
     if(!items.length) return;
-    var total=cartTotals().total, before=snapshotQty();
+    var total=cartTotals().total;
     var r=await sb.rpc('record_sale',{p_shop_id:S.shop.id,p_customer_id:cid||null,p_items:items});
     if(r.error) return fail(r.error);
     ui.cart={}; ui.sheet=null;
     await refresh(); render();
-    var alerts=newAlerts(before);
-    var msg = cid ? 'Dette enregistrée : '+fmt(total)+' pour '+custById(cid).name+'. Total dû : '+fmt(custById(cid).balance)+'.' : 'Vente encaissée : '+fmt(total)+'.';
-    if(alerts.length) toast(msg+' Alerte stock : '+alerts.join(', ')+'.',true,5000);
-    else toast(msg,false,3600);
+    var msg = cid ? 'Vente à crédit enregistrée : '+fmt(total)+' pour '+custById(cid).name : 'Vente encaissée : '+fmt(total);
+    toast(msg,false,3600);
   }
 
   var actions = {
@@ -659,7 +779,7 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
           cid=r.data.id;
           S.customers.push({id:cid,name:name,phone:r.data.phone||'',balance:0});
         }
-        if(!cid) return toast('Choisis un client ou écris un nouveau nom.',true);
+        if(!cid) return toast('Sélectionnez ou créez un client.',true);
         await completeSale(cid);
       });
     },
@@ -667,24 +787,79 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
     saveClient:function(){
       return run(async function(){
         var name=$('c-name').value.trim();
-        if(!name) return toast('Écris le nom du client.',true);
+        if(!name) return toast('Saisissez le nom du client.',true);
         var r=await sb.from('customers').insert({shop_id:S.shop.id,name:name,phone:$('c-phone').value.trim()||null});
         if(r.error) return fail(r.error);
-        ui.sheet=null; await refresh(); render(); toast('Client ajouté : '+name);
+        ui.sheet=null; await refresh(); render(); toast('Client enregistré : '+name);
+      });
+    },
+    newSupplier:function(){ if(blocked('fournisseurs')) return; ui.sheet={type:'supplierForm'}; render(); },
+    saveSupplier:function(){
+      return run(async function(){
+        var name=$('sup-name').value.trim();
+        if(!name) return toast('Saisissez le nom du fournisseur.',true);
+        var r=await sb.from('suppliers').insert({shop_id:S.shop.id,name:name,phone:$('sup-phone').value.trim()||null,address:$('sup-addr').value.trim()||null});
+        if(r.error) return fail(r.error);
+        ui.sheet=null; await refresh(); render(); toast('Fournisseur enregistré : '+name);
       });
     },
     openClient:function(el){ ui.sheet={type:'client',id:el.dataset.id}; render(); },
+    openSupplier:function(el){ ui.sheet={type:'supplier',id:el.dataset.id}; render(); },
+    openPurchaseForm:function(el){ ui.sheet={type:'purchaseForm',supplierId:el.dataset.id}; render(); },
+    savePurchase:function(el){
+      return run(async function(){
+        var supId=el.dataset.supid;
+        var prodId=$('p-prod').value;
+        var qty=parseInt($('p-qty').value,10);
+        var unitPrice=parseInt($('p-unit').value,10);
+        var paid=parseInt($('p-paid').value||0,10);
+
+        if(!(qty>0)) return toast('Saisissez une quantité valide.',true);
+        if(!(unitPrice>=0)) return toast('Saisissez le prix d\'achat unitaire.',true);
+
+        var p=byId(prodId);
+        var total = qty * unitPrice;
+
+        var r=await sb.from('supplier_purchases').insert({
+          shop_id: S.shop.id,
+          supplier_id: supId,
+          product_id: prodId,
+          product_name: p?p.name:'Produit',
+          unit_buy_price: unitPrice,
+          qty: qty,
+          total: total,
+          paid_amount: paid
+        });
+        if(r.error) return fail(r.error);
+
+        // Mettre à jour le stock et le prix d'achat du produit
+        await sb.rpc('record_stock_movement',{p_shop_id:S.shop.id,p_product_id:prodId,p_kind:'entree',p_qty:qty});
+        await sb.from('products').update({buy_price:unitPrice}).eq('id',prodId);
+
+        ui.sheet=null; await refresh(); render(); toast('Achat enregistré & Stock mis à jour : +'+qty+' '+p.name);
+      });
+    },
     payAll:function(el){ $('p-amt').value=el.dataset.amt; },
+    payAllSupplier:function(el){ $('sp-amt').value=el.dataset.amt; },
     payDebt:function(el){
       return run(async function(){
         var c=custById(el.dataset.id), a=parseInt($('p-amt').value,10);
-        if(!(a>0)) return toast('Entre le montant payé par le client.',true);
-        if(a>c.balance) return toast(c.name+' doit seulement '+fmt(c.balance)+'.',true);
+        if(!(a>0)) return toast('Saisissez le montant versé par le client.',true);
+        if(a>c.balance) return toast('Le versement dépasse la dette ('+fmt(c.balance)+').',true);
         var r=await sb.from('debt_payments').insert({shop_id:S.shop.id,customer_id:c.id,amount:a});
         if(r.error) return fail(r.error);
         ui.sheet=null; await refresh(); render();
-        var left=custById(c.id).balance;
-        toast(left>0 ? 'Paiement de '+fmt(a)+' enregistré. Reste à payer : '+fmt(left)+'.' : 'Paiement enregistré. La dette de '+c.name+' est soldée.');
+        toast('Paiement client enregistré : '+fmt(a));
+      });
+    },
+    paySupplierDebt:function(el){
+      return run(async function(){
+        var sup=suppById(el.dataset.id), a=parseInt($('sp-amt').value,10);
+        if(!(a>0)) return toast('Saisissez le montant payé au fournisseur.',true);
+        var r=await sb.from('supplier_payments').insert({shop_id:S.shop.id,supplier_id:sup.id,amount:a});
+        if(r.error) return fail(r.error);
+        ui.sheet=null; await refresh(); render();
+        toast('Paiement fournisseur enregistré : '+fmt(a));
       });
     },
     openProduct:function(el){ ui.sheet={type:'product',id:el.dataset.id}; render(); },
@@ -697,32 +872,48 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
     entree:function(el){
       return run(async function(){
         var p=byId(el.dataset.id), q=parseInt($('m-qty').value,10);
-        if(!(q>0)) return toast('Entre une quantité supérieure à 0.',true);
+        if(!(q>0)) return toast('Entre une quantité valide.',true);
         var r=await sb.rpc('record_stock_movement',{p_shop_id:S.shop.id,p_product_id:p.id,p_kind:'entree',p_qty:q});
         if(r.error) return fail(r.error);
-        ui.sheet=null; await refresh(); render(); toast('Entrée enregistrée : +'+q+' '+p.name);
+        ui.sheet=null; await refresh(); render(); toast('Entrée de stock : +'+q+' '+p.name);
       });
     },
     sortie:function(el){
       return run(async function(){
         var p=byId(el.dataset.id), q=parseInt($('m-qty').value,10);
-        if(!(q>0)) return toast('Entre une quantité supérieure à 0.',true);
-        if(q>p.qty) return toast('Le stock est de '+p.qty+'. Tu ne peux pas sortir '+q+'.',true);
-        var before=snapshotQty();
+        if(!(q>0)) return toast('Entre une quantité valide.',true);
+        if(q>p.qty) return toast('Stock insuffisant ('+p.qty+').',true);
         var r=await sb.rpc('record_stock_movement',{p_shop_id:S.shop.id,p_product_id:p.id,p_kind:'sortie',p_qty:q});
         if(r.error) return fail(r.error);
-        ui.sheet=null; await refresh(); render();
-        var al=newAlerts(before);
-        if(al.length) toast('Sortie enregistrée. Alerte stock : '+al.join(', ')+'.',true,4000);
-        else toast('Sortie enregistrée : −'+q+' '+p.name);
+        ui.sheet=null; await refresh(); render(); toast('Sortie de stock : −'+q+' '+p.name);
       });
     },
     saveForm:function(){
       return run(async function(){
         var name=$('f-name').value.trim(), buy=num0('f-buy'), sell=num0('f-sell'), qty=num0('f-qty'), th=num0('f-th');
-        if(!name) return toast('Écris le nom du produit.',true);
-        if([buy,sell,qty,th].some(function(x){return isNaN(x)||x<0;})) return toast('Remplis les prix et les quantités avec des nombres positifs.',true);
-        var row={name:name,buy_price:Math.round(buy),sell_price:Math.round(sell),qty:Math.floor(qty),alert_threshold:Math.floor(th)};
+        var wprice = $('f-wprice') ? num0('f-wprice') : null;
+        var wqty = $('f-wqty') ? num0('f-wqty') : null;
+
+        if(!name) return toast('Saisissez le nom du produit.',true);
+        if([buy,sell,qty,th].some(function(x){return isNaN(x)||x<0;})) return toast('Remplissez les prix et quantités avec des nombres valides.',true);
+
+        if(wprice || wqty){
+          if(blocked('grossiste')) return;
+          if(isNaN(wprice) || wprice <= 0 || isNaN(wqty) || wqty < 2){
+            return toast('Renseignez un prix gros valide et une quantité minimale ≥ 2.',true);
+          }
+        }
+
+        var row={
+          name:name,
+          buy_price:Math.round(buy),
+          sell_price:Math.round(sell),
+          wholesale_price: (wprice>0)?Math.round(wprice):null,
+          wholesale_min_qty: (wqty>0)?Math.floor(wqty):null,
+          qty:Math.floor(qty),
+          alert_threshold:Math.floor(th)
+        };
+
         var r;
         if(ui.sheet.id){ r=await sb.from('products').update(row).eq('id',ui.sheet.id); }
         else { if(blocked('produits')) return; row.shop_id=S.shop.id; r=await sb.from('products').insert(row); }
@@ -735,11 +926,13 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
         var p=byId(el.dataset.id);
         var r=await sb.from('products').update({archived:true}).eq('id',p.id);
         if(r.error) return fail(r.error);
-        delete ui.cart[p.id]; ui.sheet=null; await refresh(); render(); toast('Produit retiré : '+p.name);
+        delete ui.cart[p.id]; ui.sheet=null; await refresh(); render(); toast('Produit archivé : '+p.name);
       });
     },
     filter:function(el){ ui.filter=el.dataset.f; render(); },
-    openPlan:function(el){ ui.sheet={type:'plan',why:el.dataset.why||''}; render(); },
+    selectPlan:function(el){
+      ui.sheet={type:'plan',selectedPlan:el.dataset.plan}; render();
+    },
     authToggle:function(){ ui.authMode = ui.authMode==='signup' ? 'login' : 'signup'; ui.authErr=''; ui.authMsg=''; render(); },
     logout:function(){
       return run(async function(){
@@ -751,8 +944,20 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
     retry:function(){
       return run(async function(){
         S.loadError='';
-        try{ await refresh(); }catch(e){ S.loadError='Impossible de charger tes données. '+((e&&e.message)||''); }
+        try{ await refresh(); }catch(e){ S.loadError='Impossible de charger vos données. '+((e&&e.message)||''); }
         render();
+      });
+    },
+    payOnline:function(el){
+      return run(async function(){
+        var targetPlan = el.dataset.plan || 'pro_grossiste';
+        var r=await sb.functions.invoke('create-payment',{body:{plan:targetPlan}});
+        if(r.error || !r.data || !r.data.url){
+          toast('Paiement en ligne PayDunya indisponible. Utilisez le paiement direct Wave/OM.',true,5000);
+          return;
+        }
+        toast('Redirection vers PayDunya...');
+        location.href=r.data.url;
       });
     },
     reloadPage:function(){ location.reload(); }
@@ -781,7 +986,7 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
   });
 
   /* ------------------------------------------------------------------
-     DÉMARRAGE
+     DÉMARRAGE APP
      ------------------------------------------------------------------ */
   async function boot(){
     render();
@@ -791,7 +996,7 @@ input{width:100%;min-height:48px;padding:0 14px;border-radius:12px;border:1.5px 
       S.user = g.data && g.data.session ? g.data.session.user : null;
       if(S.user) await refresh();
     }catch(e){
-      S.loadError='Impossible de charger tes données. '+((e&&e.message)||'');
+      S.loadError='Impossible de charger vos données. '+((e&&e.message)||'');
     }
     ui.ready=true; render();
     sb.auth.onAuthStateChange(function(event){
